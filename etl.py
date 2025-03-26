@@ -99,10 +99,7 @@ class MetadataRetriever:
             sample_data_df = pd.DataFrame(sample_data)
 
             if not sample_data_df.empty:
-                df = pd.merge(df, sample_data_df, on="samp_name", how="left", suffixes=("", "_dup"))
-
-            if "analysis_type_dup" in df.columns:
-                df.drop(columns=["analysis_type_dup"], inplace=True)
+                df = pd.merge(df, sample_data_df, on="samp_name", how="left")
 
             # Append the non-UF key name into the df for 'Sample Isolated From' col in jgi mg/mt
             df['sample_isolated_from'] = key
@@ -141,11 +138,6 @@ class MetadataRetriever:
                     return "" # return empty string for invalid cases
 
             df["collection_month_name"] = df["collection_month"].apply(get_month_name)
-
-        # Ensure 'analysis_type' exists in df before modifying it
-        if 'analysis_type' in df.columns:
-            df['analysis_type'] = df['analysis_type'].apply(lambda x: "; ".join(x) if isinstance(x, list) else x)
-
 
         # Address 'Was sample DNAse treated?' col
         # Change from 'yes/no' to 'Y/N'
