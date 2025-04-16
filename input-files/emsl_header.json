@@ -79,7 +79,7 @@
     },
     "Storage Condition": {
         "1": "Detail how your sample was stored",
-        "2": "{YYYY-MM-DD}",
+        "2": "enumeration",
         "header": "storage_condt",
         "sub_port_mapping": "store_cond"
     },
