@@ -155,6 +155,12 @@ class MetadataRetriever:
             df.loc[df["dnase_rna"] == "yes", "dnase_rna"] = 'Y'
             df.loc[df["dnase_rna"] == "no", "dnase_rna"] = 'N'
 
+        # Address standardizing "USA" country name for MG and MT
+        # Replace "country_name" with "USA" if it exists
+        usa_names = ["United States", "United States of America"]
+        if self.user_facility == 'jgi_mg' or self.user_facility == 'jgi_mt':
+            df["country_name"]= df["country_name"].replace(usa_names, "USA")
+
         return df
 
 
