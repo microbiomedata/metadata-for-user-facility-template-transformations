@@ -157,7 +157,7 @@ class MetadataRetriever:
 
         # Address standardizing "USA" country name for MG and MT
         # Replace "country_name" with "USA" if it exists
-        usa_names = ["United States", "United States of America"]
+        usa_names = ["United States", "United States of America", "US", "America", "usa", "united states", "united states of america", "us", "america"]
         if self.user_facility == 'jgi_mg' or self.user_facility == 'jgi_mt':
             df["country_name"]= df["country_name"].replace(usa_names, "USA")
 
