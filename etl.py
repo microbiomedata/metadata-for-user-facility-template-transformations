@@ -89,6 +89,7 @@ class MetadataRetriever:
         sample_data_keys = [
             key for key in all_keys_data if key not in user_facility_keys
         ]
+        print(sample_data_keys)
 
         # Loop through resulting keys and combine with common_df by samp_name
         for key in sample_data_keys:
@@ -97,10 +98,13 @@ class MetadataRetriever:
                 "sampleData"
             ].get(key, {})
             sample_data_df = pd.DataFrame(sample_data)
+            # print(df)
+            # df.to_csv('SAMP_OUTPUT.csv', index=False)
 
             if not sample_data_df.empty:
                 df = pd.merge(df, sample_data_df, on="samp_name", how="left", suffixes=("", "_dup"))
-
+            # print(df)
+            # df.to_csv('SAMP_OUTPUT.csv', index=False)
             if "analysis_type_dup" in df.columns:
                 df.drop(columns=["analysis_type_dup"], inplace=True)
 
@@ -108,22 +112,47 @@ class MetadataRetriever:
             df['sample_isolated_from'] = key
 
         # Begin collecting detailed sample data
+            
+        df.to_csv('SAMP_OUTPUT.csv', index=False)
+        # Add some kind of "for sample in samples" situation 
+        for index, row in df.iterrows():
+            print(row["samp_name"])
 
-        if "lat_lon" in df.columns:
-            df[["latitude", "longitude"]] = df["lat_lon"].str.split(" ", expand=True)
+            if "lat_lon" in df.columns:
+                print(row["lat_lon"])
+                # values = str(row["lat_lon"]).split(" ")
+                # df.loc[index, ["latitude", "longitude"]] = values
+                # row["lat_lon"] = str(row["lat_lon"])
+                # row[["latitude", "longitude"]] = row["lat_lon"].str.split(" ", expand=True, n=1)
+                values = str(row["lat_lon"]).split(" ", 1)
+        
+                # Assign the split values back to the row
+                row.at["latitude"] = values[0]
+                row.at["longitude"] = values[1]
 
-        if "depth" in df.columns:
-            # Case - different delimiters used
-            df["depth"] = df["depth"].str.replace("-", " - ")
-            # Case - only one value provided for depth (single value will be max and min)
-            dfNew = df["depth"].str.split(" - ", expand=True)
-            if dfNew.shape[0] == 1:
-                df[["minimum_depth"]] = dfNew[0]
-                df[["maximum_depth"]] = dfNew[0]
-            else:
-                df[["minimum_depth", "maximum_depth"]] = df["depth"].str.split(
-                    " - ", expand=True
-                )
+                # Update the original DataFrame with the new row values
+                # df.loc[index] = row
+
+            if "depth" in df.columns:
+                # Case - different delimiters used
+                row["depth"] = row["depth"].str.replace("-", " - ")
+                # Case - only one value provided for depth (single value will be max and min)
+                # Checking if the value is a string, because if there is a dash, that will be the case
+                if type(row["depth"]) == str:
+                    row[["minimum_depth", "maximum_depth"]] = row["depth"].str.split(
+                        " - ", expand=True
+                    )
+                else:
+                    row[["minimum_depth"]] = row["depth"]
+                    row[["maximum_depth"]] = row["depth"]
+                # dfNew = row["depth"].str.split(" - ", expand=True)
+                # if dfNew.shape[0] == 1:
+                #     row[["minimum_depth"]] = dfNew[0]
+                #     row[["maximum_depth"]] = dfNew[0]
+                # else:
+                #     row[["minimum_depth", "maximum_depth"]] = row["depth"].str.split(
+                #         " - ", expand=True
+                #     )
 
         if "geo_loc_name" in df.columns:
             df["country_name"] = df["geo_loc_name"].str.split(":").str[0]
@@ -149,11 +178,13 @@ class MetadataRetriever:
         # Address 'Was sample DNAse treated?' col
         # Change from 'yes/no' to 'Y/N'
         if self.user_facility == 'jgi_mg':
-            df.loc[df["dna_dnase"] == "yes", "dna_dnase"] = 'Y'
-            df.loc[df["dna_dnase"] == "no", "dna_dnase"] = 'N'
+            if 'dna_dnase' in df.columns:
+                df.loc[df["dna_dnase"] == "yes", "dna_dnase"] = 'Y'
+                df.loc[df["dna_dnase"] == "no", "dna_dnase"] = 'N'
         if self.user_facility == 'jgi_mt':
-            df.loc[df["dnase_rna"] == "yes", "dnase_rna"] = 'Y'
-            df.loc[df["dnase_rna"] == "no", "dnase_rna"] = 'N'
+            if 'dna_dnase' in df.columns:
+                df.loc[df["dnase_rna"] == "yes", "dnase_rna"] = 'Y'
+                df.loc[df["dnase_rna"] == "no", "dnase_rna"] = 'N'
 
         return df
 
