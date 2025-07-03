@@ -89,7 +89,9 @@ class MetadataRetriever:
         sample_data_keys = [
             key for key in all_keys_data if key not in user_facility_keys
         ]
-        print(sample_data_keys)
+
+        # Create an empty list to store dataframes for each key
+        sample_data_dfs = []
 
         # Loop through resulting keys and combine with common_df by samp_name
         for key in sample_data_keys:
@@ -97,59 +99,40 @@ class MetadataRetriever:
             sample_data: Dict[str, Any] = response["metadata_submission"][
                 "sampleData"
             ].get(key, {})
-            sample_data_df = pd.DataFrame(sample_data)
-            # print(df)
-            # df.to_csv('SAMP_OUTPUT.csv', index=False)
-
-            if not sample_data_df.empty:
-                df = pd.merge(df, sample_data_df, on="samp_name", how="left", suffixes=("", "_dup"))
-            # print(df)
-            # df.to_csv('SAMP_OUTPUT.csv', index=False)
-            if "analysis_type_dup" in df.columns:
-                df.drop(columns=["analysis_type_dup"], inplace=True)
-
-            # Append the non-UF key name into the df for 'Sample Isolated From' col in jgi mg/mt
-            df['sample_isolated_from'] = key
 
         # Begin collecting detailed sample data
             
-        df.to_csv('SAMP_OUTPUT.csv', index=False)
-        # Add some kind of "for sample in samples" situation 
+            # If there's sample data, create a DataFrame and add it to the list
+            if sample_data:
+                sample_data_df = pd.DataFrame(sample_data)
+                
+                # Add the non-UF key name into the df for 'Sample Isolated From' col in jgi mg/mt
+                sample_data_df['sample_isolated_from'] = key
+                # Append to list of dfs
+                sample_data_dfs.append(sample_data_df)
+
+        # Concatenate sample dataframes into one (if they exist)
+        if sample_data_dfs:
+            all_sample_data_df = pd.concat(sample_data_dfs, ignore_index=True)
+            # Merge the combined sample data with df on samp_name
+            if not df.empty and not all_sample_data_df.empty:
+                df = pd.merge(df, all_sample_data_df, on="samp_name", how="outer")
+        
         for index, row in df.iterrows():
-            print(row["samp_name"])
 
             if "lat_lon" in df.columns:
-                print(row["lat_lon"])
-                # values = str(row["lat_lon"]).split(" ")
-                # df.loc[index, ["latitude", "longitude"]] = values
-                # row["lat_lon"] = str(row["lat_lon"])
-                # row[["latitude", "longitude"]] = row["lat_lon"].str.split(" ", expand=True, n=1)
-                values = str(row["lat_lon"]).split(" ", 1)
-        
-                # Assign the split values back to the row
-                row.at["latitude"] = values[0]
-                row.at["longitude"] = values[1]
+
+                # Check if lat_lon is nan before trying to split it
+                if pd.isnull(row["lat_lon"]):
+                    df.at[index, "latitude"] = None
+                    df.at[index, "longitude"] = None
+                else: 
+                    values = str(row["lat_lon"]).split(" ", 1)
+                    # Assign the split values back to the row
+                    df.at[index, "latitude"] = values[0]
+                    df.at[index, "longitude"] = values[1]
 
             if "depth" in df.columns:
-                # # Case - different delimiters used
-                # row["depth"] = row["depth"].str.replace("-", " - ")
-                # # Case - only one value provided for depth (single value will be max and min)
-                # # Checking if the value is a string, because if there is a dash, that will be the case
-                # if type(row["depth"]) == str:
-                #     row[["minimum_depth", "maximum_depth"]] = row["depth"].str.split(
-                #         " - ", expand=True
-                #     )
-                # else:
-                #     row[["minimum_depth"]] = row["depth"]
-                #     row[["maximum_depth"]] = row["depth"]
-                # # dfNew = row["depth"].str.split(" - ", expand=True)
-                # # if dfNew.shape[0] == 1:
-                # #     row[["minimum_depth"]] = dfNew[0]
-                # #     row[["maximum_depth"]] = dfNew[0]
-                # # else:
-                # #     row[["minimum_depth", "maximum_depth"]] = row["depth"].str.split(
-                # #         " - ", expand=True
-                # #     )
 
                 # Case - different delimiters used
                 row["depth"] = str(row["depth"]).replace("-", " - ")
@@ -160,15 +143,15 @@ class MetadataRetriever:
                     values = row["depth"].split(" - ")
                     # Check if only one value
                     if len(values) == 1:
-                        row.at["minimum_depth"] = float(values[0])
-                        row.at["maximum_depth"] = float(values[0])
+                        df.at[index, "minimum_depth"] = float(values[0])
+                        df.at[index, "maximum_depth"] = float(values[0])
                     # Check if it's a range
                     elif len(values) == 2:
-                        row.at["minimum_depth"] = float(values[0])
-                        row.at["maximum_depth"] = float(values[1])
+                        df.at[index, "minimum_depth"] = float(values[0])
+                        df.at[index, "maximum_depth"] = float(values[1])
                 else:
-                    row.at["minimum_depth"] = row["depth"]
-                    row.at["maximum_depth"] = row["depth"]
+                    df.at[index, "minimum_depth"] = row["depth"]
+                    df.at[index, "maximum_depth"] = row["depth"]
 
         if "geo_loc_name" in df.columns:
             df["country_name"] = df["geo_loc_name"].str.split(":").str[0]
