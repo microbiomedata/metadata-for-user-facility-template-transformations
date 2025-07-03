@@ -130,29 +130,45 @@ class MetadataRetriever:
                 row.at["latitude"] = values[0]
                 row.at["longitude"] = values[1]
 
-                # Update the original DataFrame with the new row values
-                # df.loc[index] = row
-
             if "depth" in df.columns:
-                # Case - different delimiters used
-                row["depth"] = row["depth"].str.replace("-", " - ")
-                # Case - only one value provided for depth (single value will be max and min)
-                # Checking if the value is a string, because if there is a dash, that will be the case
-                if type(row["depth"]) == str:
-                    row[["minimum_depth", "maximum_depth"]] = row["depth"].str.split(
-                        " - ", expand=True
-                    )
-                else:
-                    row[["minimum_depth"]] = row["depth"]
-                    row[["maximum_depth"]] = row["depth"]
-                # dfNew = row["depth"].str.split(" - ", expand=True)
-                # if dfNew.shape[0] == 1:
-                #     row[["minimum_depth"]] = dfNew[0]
-                #     row[["maximum_depth"]] = dfNew[0]
-                # else:
+                # # Case - different delimiters used
+                # row["depth"] = row["depth"].str.replace("-", " - ")
+                # # Case - only one value provided for depth (single value will be max and min)
+                # # Checking if the value is a string, because if there is a dash, that will be the case
+                # if type(row["depth"]) == str:
                 #     row[["minimum_depth", "maximum_depth"]] = row["depth"].str.split(
                 #         " - ", expand=True
                 #     )
+                # else:
+                #     row[["minimum_depth"]] = row["depth"]
+                #     row[["maximum_depth"]] = row["depth"]
+                # # dfNew = row["depth"].str.split(" - ", expand=True)
+                # # if dfNew.shape[0] == 1:
+                # #     row[["minimum_depth"]] = dfNew[0]
+                # #     row[["maximum_depth"]] = dfNew[0]
+                # # else:
+                # #     row[["minimum_depth", "maximum_depth"]] = row["depth"].str.split(
+                # #         " - ", expand=True
+                # #     )
+
+                # Case - different delimiters used
+                row["depth"] = str(row["depth"]).replace("-", " - ")
+                
+                # Case - only one value provided for depth (single value will be max and min)
+                # Checking if the value is a string, because if there is a dash, that will be the case
+                if type(row["depth"]) == str:
+                    values = row["depth"].split(" - ")
+                    # Check if only one value
+                    if len(values) == 1:
+                        row.at["minimum_depth"] = float(values[0])
+                        row.at["maximum_depth"] = float(values[0])
+                    # Check if it's a range
+                    elif len(values) == 2:
+                        row.at["minimum_depth"] = float(values[0])
+                        row.at["maximum_depth"] = float(values[1])
+                else:
+                    row.at["minimum_depth"] = row["depth"]
+                    row.at["maximum_depth"] = row["depth"]
 
         if "geo_loc_name" in df.columns:
             df["country_name"] = df["geo_loc_name"].str.split(":").str[0]
