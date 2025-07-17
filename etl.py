@@ -90,40 +90,68 @@ class MetadataRetriever:
             key for key in all_keys_data if key not in user_facility_keys
         ]
 
+        # Create an empty list to store dataframes for each key
+        sample_data_dfs = []
+
         # Loop through resulting keys and combine with common_df by samp_name
         for key in sample_data_keys:
 
             sample_data: Dict[str, Any] = response["metadata_submission"][
                 "sampleData"
             ].get(key, {})
-            sample_data_df = pd.DataFrame(sample_data)
-
-            if not sample_data_df.empty:
-                df = pd.merge(df, sample_data_df, on="samp_name", how="left", suffixes=("", "_dup"))
-
-            if "analysis_type_dup" in df.columns:
-                df.drop(columns=["analysis_type_dup"], inplace=True)
-
-            # Append the non-UF key name into the df for 'Sample Isolated From' col in jgi mg/mt
-            df['sample_isolated_from'] = key
 
         # Begin collecting detailed sample data
+            
+            # If there's sample data, create a DataFrame and add it to the list
+            if sample_data:
+                sample_data_df = pd.DataFrame(sample_data)
+                
+                # Add the non-UF key name into the df for 'Sample Isolated From' col in jgi mg/mt
+                sample_data_df['sample_isolated_from'] = key
+                # Append to list of dfs
+                sample_data_dfs.append(sample_data_df)
 
-        if "lat_lon" in df.columns:
-            df[["latitude", "longitude"]] = df["lat_lon"].str.split(" ", expand=True)
+        # Concatenate sample dataframes into one (if they exist)
+        if sample_data_dfs:
+            all_sample_data_df = pd.concat(sample_data_dfs, ignore_index=True)
+            # Merge the combined sample data with df on samp_name
+            if not df.empty and not all_sample_data_df.empty:
+                df = pd.merge(df, all_sample_data_df, on="samp_name", how="outer")
+        
+        for index, row in df.iterrows():
 
-        if "depth" in df.columns:
-            # Case - different delimiters used
-            df["depth"] = df["depth"].str.replace("-", " - ")
-            # Case - only one value provided for depth (single value will be max and min)
-            dfNew = df["depth"].str.split(" - ", expand=True)
-            if dfNew.shape[0] == 1:
-                df[["minimum_depth"]] = dfNew[0]
-                df[["maximum_depth"]] = dfNew[0]
-            else:
-                df[["minimum_depth", "maximum_depth"]] = df["depth"].str.split(
-                    " - ", expand=True
-                )
+            if "lat_lon" in df.columns:
+
+                # Check if lat_lon is nan before trying to split it
+                if pd.isnull(row["lat_lon"]):
+                    df.at[index, "latitude"] = None
+                    df.at[index, "longitude"] = None
+                else: 
+                    values = str(row["lat_lon"]).split(" ", 1)
+                    # Assign the split values back to the row
+                    df.at[index, "latitude"] = values[0]
+                    df.at[index, "longitude"] = values[1]
+
+            if "depth" in df.columns:
+
+                # Case - different delimiters used
+                row["depth"] = str(row["depth"]).replace("-", " - ")
+                
+                # Case - only one value provided for depth (single value will be max and min)
+                # Checking if the value is a string, because if there is a dash, that will be the case
+                if type(row["depth"]) == str:
+                    values = row["depth"].split(" - ")
+                    # Check if only one value
+                    if len(values) == 1:
+                        df.at[index, "minimum_depth"] = float(values[0])
+                        df.at[index, "maximum_depth"] = float(values[0])
+                    # Check if it's a range
+                    elif len(values) == 2:
+                        df.at[index, "minimum_depth"] = float(values[0])
+                        df.at[index, "maximum_depth"] = float(values[1])
+                else:
+                    df.at[index, "minimum_depth"] = row["depth"]
+                    df.at[index, "maximum_depth"] = row["depth"]
 
         if "geo_loc_name" in df.columns:
             df["country_name"] = df["geo_loc_name"].str.split(":").str[0]
@@ -149,11 +177,13 @@ class MetadataRetriever:
         # Address 'Was sample DNAse treated?' col
         # Change from 'yes/no' to 'Y/N'
         if self.user_facility == 'jgi_mg':
-            df.loc[df["dna_dnase"] == "yes", "dna_dnase"] = 'Y'
-            df.loc[df["dna_dnase"] == "no", "dna_dnase"] = 'N'
+            if 'dna_dnase' in df.columns:
+                df.loc[df["dna_dnase"] == "yes", "dna_dnase"] = 'Y'
+                df.loc[df["dna_dnase"] == "no", "dna_dnase"] = 'N'
         if self.user_facility == 'jgi_mt':
-            df.loc[df["dnase_rna"] == "yes", "dnase_rna"] = 'Y'
-            df.loc[df["dnase_rna"] == "no", "dnase_rna"] = 'N'
+            if 'dna_dnase' in df.columns:
+                df.loc[df["dnase_rna"] == "yes", "dnase_rna"] = 'Y'
+                df.loc[df["dnase_rna"] == "no", "dnase_rna"] = 'N'
 
         # Address standardizing "USA" country name for MG and MT
         # Replace "country_name" with "USA" if it exists
