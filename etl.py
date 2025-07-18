@@ -201,6 +201,7 @@ class SpreadsheetCreator:
 
     def __init__(
         self,
+        user_facility: str,
         json_mapper: Dict[str, Dict[str, Union[str, List[str]]]],
         metadata_df: pd.DataFrame,
     ) -> None:
@@ -210,6 +211,7 @@ class SpreadsheetCreator:
         :param json_mapper: The JSON mapper specifying column mappings.
         :param metadata_df: The metadata DataFrame to create the spreadsheet from.
         """
+        self.user_facility = user_facility
         self.json_mapper = json_mapper
         self.metadata_df = metadata_df
 
@@ -273,7 +275,32 @@ class SpreadsheetCreator:
         :param rows_df: The sample rows DataFrame.
         :return: The combined DataFrame.
         """
-        return pd.concat([headers_df, rows_df])
+
+        # Account for specialized EMSL user facility mapping: 
+        if self.user_facility == 'emsl':
+
+            # Extract the header mapping keywords and column titles from headers_df
+            # These will be used to map the info in rows_df into the new df
+            mapping_keywords = headers_df.iloc[2].values
+            column_titles = headers_df.columns
+
+            # Go through rows_df data and select cols where the mapping keywords match
+            # (exist in both headers_df and rows_df), and insert NaN for missing data
+            matched_data = {title: rows_df.get(keyword, pd.Series([None]*len(rows_df)))
+                            for title, keyword in zip(column_titles, mapping_keywords)}
+            
+            # Create new df for aligned column data
+            matching_rows_df = pd.DataFrame(matched_data)
+
+            # Combind aligned data with headers_df by keeping the header and 
+            # appending the aligned rows_df data
+            combined = pd.concat([headers_df, matching_rows_df], ignore_index=True)
+
+            return combined
+
+        # Otherwise, JGI user facility: 
+        else:
+            return pd.concat([headers_df, rows_df], ignore_index=True)
 
     def create_spreadsheet(self, header: bool) -> pd.DataFrame:
         """
@@ -343,7 +370,7 @@ def cli(
     with open(mapper, "r") as f:
         json_mapper: Dict[str, Dict[str, Union[str, List[str]]]] = json.load(f)
 
-    spreadsheet_creator = SpreadsheetCreator(json_mapper, metadata_df)
+    spreadsheet_creator = SpreadsheetCreator(user_facility, json_mapper, metadata_df)
     user_facility_spreadsheet = spreadsheet_creator.create_spreadsheet(header)
     user_facility_spreadsheet.to_excel(output, index=False)
 
