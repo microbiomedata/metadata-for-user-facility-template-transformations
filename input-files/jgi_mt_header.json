@@ -1,15 +1,15 @@
 {
     "Seq Project ID (No edit)":  {
         "1": "Prefilled",
-        "sub_port_mapping": "rna_seq_project"
+        "sub_port_mapping": "jgi_seq_project"
     },
     "Seq Project Name (No edit)":  {
         "1": "Prefilled",
-        "sub_port_mapping": "rna_seq_project_name"
+        "sub_port_mapping": "jgi_seq_project_name"
     },
     "Sample ID (No edit)": {
         "1": "Prefilled",
-        "sub_port_mapping": "rna_samp_id"
+        "sub_port_mapping": "jgi_samp_id"
     },
     "Source Sample GUID": {
         "1": "List the sample's Globally Unique Identifier, if available. More details are available on the \"instructions\" tab.",
@@ -28,39 +28,39 @@
     },
     "Concentration* (ng/ul)": {
         "1": "Must be calculated using a fluorometric method; value >0 and <2000.",
-        "sub_port_mapping": "rna_concentration"
+        "sub_port_mapping": "nuc_acid_concentration"
     },
     "Volume* (ul)": {
         "1": "Value must be >0 and <1000 (values <25 by special permission only).",
-        "sub_port_mapping": "rna_volume"
+        "sub_port_mapping": "jgi_sample_volume"
     },
     "Absorbance 260/280* (required for metagenome improved drafts or any PacBio libraries)": {
         "1": "Recommended value is between 1 and 3.",
-        "sub_port_mapping": "rna_absorb1"
+        "sub_port_mapping": "nuc_acid_absorb1"
     },
     "Absorbance 260/230* (required for metagenome improved drafts or any PacBio libraries)": {
         "1": "Recommended value is between 1 and 3.",
-        "sub_port_mapping": "rna_absorb2"
+        "sub_port_mapping": "nuc_acid_absorb2"
     },
     "Tube or Plate Label*": {
         "1": "Must be unique across all tubes and plates, and <20 characters. All samples in a plate should have the same plate label.",
-        "sub_port_mapping": "rna_container_id"
+        "sub_port_mapping": "container_name"
     },
     "Sample Container*": {
         "1": "tube or plate (96-well)",
-        "sub_port_mapping": "rna_cont_type"
+        "sub_port_mapping": "cont_type"
     },
     "Plate location (well #)* required if samples provided in a plate": {
         "1": "Corner wells must be blank. For partial plates, fill by columns. Leave blank if the sample will be shipped in a tube.",
-        "sub_port_mapping": "rna_cont_well"
+        "sub_port_mapping": "cont_well"
     },
     "Sample Format*": {
         "1": "Choose from the following: Pellet, RNAStable, DNAStable, Ethanol, MDA reaction buffer, PBS, TE, Water, Low EDTA TE, 10 mM Tris-HCl, Gentegra-DNA",
-        "sub_port_mapping": "rna_sample_format"
+        "sub_port_mapping": "jgi_sample_format"
     },
     "Was Sample DNAse treated?*": {
         "1": "Y/N.  Note DNAse treatment is required for all RNA samples.",
-        "sub_port_mapping": "dnase_rna"
+        "sub_port_mapping": "dnase"
     },
     "Known / Suspected Organisms": {
         "1": "List any organisms known or suspected to grow in co-culture, as well as estimated % of the organism in that culture."
