@@ -74,13 +74,11 @@ Options:
 
 
 - Example - JGI/JGI_MG
-```
-mutts --submission {UUID of the target submission} --unique-field samp_name --user-facility jgi_mg --mapper input-files/jgi_mg_header.json --output file-name_jgi.xlsx
+```bash
+$ mutts --submission {UUID of the target submission} --unique-field samp_name --user-facility jgi_mg --mapper input-files/jgi_mg_header.json --output file-name_jgi.xlsx
 ```
 
 - Example - EMSL
+```bash
+$ mutts --submission {UUID of the target submission} --user-facility emsl --mapper input-files/emsl_header.json --header --unique-field samp_name --output file-name_emsl.xlsx
 ```
-mutts --submission {UUID of the target submission} --user-facility emsl --mapper input-files/emsl_header.json --header --unique-field samp_name --output file-name_emsl.xlsx
-```
-
-**Note:** You can also use the legacy `etl.py` script directly with `poetry run python etl.py`, though the `mutts` command is recommended.
