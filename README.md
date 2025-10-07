@@ -18,7 +18,7 @@ There are two components (of MUTTs) to keep in mind when trying to use this appl
       * [jgi_mg_header.json](input-files/jgi_mg_header.json)
       * [jgi_mt_header.json](input-files/jgi_mt_header.json)
 
-2. [etl.py](etl.py)
+2. `mutts` CLI
    The command line application that can facilitate the conversion of metadata from the Submission Portal into user facility formats by consuming the above two files as inputs.
 
 ## Software Requirements
@@ -33,21 +33,23 @@ There are two components (of MUTTs) to keep in mind when trying to use this appl
 git clone https://github.com/microbiomedata/metadata-for-user-facility-template-transformations.git
 ```
 
-2. Install dependencies with poetry
+2. Install the package with poetry
 
 ```
 poetry install
 ```
 
+This will install the `mutts` package and create a `mutts` command-line tool.
+
 3. You need to obtain your NMDC Data and Submission Portal API Access Token and copy it over into your `.env` file, and associate it with the `DATA_PORTAL_REFRESH_TOKEN` environment variable. 
    1. You can retrieve your Access Token by following this link: https://data.microbiomedata.org/user
    2. Go over to the `.env` file and copy the Refresh Token like `DATA_PORTAL_REFRESH_TOKEN={refresh_token_value}`
 
-4. Run `etl.py` with options as follows:
+4. Run the `mutts` command with options as follows:
 
 ```bash
-metadata-for-user-facility-template-transformations git:(main) ✗ poetry run python etl.py --help
-Usage: etl.py [OPTIONS]
+mutts --help
+Usage: mutts [OPTIONS]
 
   Command-line interface for creating a spreadsheet based on metadata records.
 
@@ -73,10 +75,12 @@ Options:
 
 - Example - JGI/JGI_MG
 ```
-poetry run python etl.py --submission {UUID of the target submission} --unique-field samp_name --user-facility jgi_mg --mapper input-files/jgi_mg_header.json --output file-name_jgi.xlsx
+mutts --submission {UUID of the target submission} --unique-field samp_name --user-facility jgi_mg --mapper input-files/jgi_mg_header.json --output file-name_jgi.xlsx
 ```
 
 - Example - EMSL
 ```
-poetry run python etl.py --submission {UUID of the target submission} --user-facility emsl --mapper input-files/emsl_header.json --header --unique-field samp_name --output file-name_emsl.xlsx
+mutts --submission {UUID of the target submission} --user-facility emsl --mapper input-files/emsl_header.json --header --unique-field samp_name --output file-name_emsl.xlsx
 ```
+
+**Note:** You can also use the legacy `etl.py` script directly with `poetry run python etl.py`, though the `mutts` command is recommended.
