@@ -1,8 +1,16 @@
 [tool.poetry]
-name = "metadata-template-transformation"
-version = "0.1.0"
-description = ""
-authors = ["Sujay Patil <sujaysanjeev.patil@gmail.com>"]
+name = "mutts"
+version = "1.0.0"
+description = "Metadata for User facility Template Transformations"
+authors = [
+    "Sujay Patil <spatil@lbl.gov>",
+    "Cristina Stone Pedraza <cristina.stonepedraza@pnnl.gov>",
+    "Montana Smith <montana.smith@pnnl.gov>",
+    ]
+packages = [{include = "mutts", from = "src"}]
+
+[tool.poetry.scripts]
+mutts = "mutts.cli:cli"
 
 [tool.poetry.dependencies]
 python = "^3.9"
