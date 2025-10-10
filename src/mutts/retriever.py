@@ -176,14 +176,9 @@ class MetadataRetriever:
 
         # Address 'Was sample DNAse treated?' col
         # Change from 'yes/no' to 'Y/N'
-        if self.user_facility == "jgi_mg":
-            if "dna_dnase" in df.columns:
-                df.loc[df["dna_dnase"] == "yes", "dna_dnase"] = "Y"
-                df.loc[df["dna_dnase"] == "no", "dna_dnase"] = "N"
-        if self.user_facility == "jgi_mt":
-            if "dna_dnase" in df.columns:
-                df.loc[df["dnase_rna"] == "yes", "dnase_rna"] = "Y"
-                df.loc[df["dnase_rna"] == "no", "dnase_rna"] = "N"
+        if self.user_facility in ["jgi_mg", "jgi_mt"] and "dnase" in df.columns:
+            df.loc[df["dnase"] == "yes", "dnase"] = "Y"
+            df.loc[df["dnase"] == "no", "dnase"] = "N"
 
         # Address standardizing "USA" country name for MG and MT
         # Replace "country_name" with "USA" if it exists
