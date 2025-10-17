@@ -138,6 +138,15 @@ class MetadataRetriever:
 
             if "depth" in df.columns:
 
+                # Auto-fill depth with 0 for JGI facilities if no value is provided
+                if self.user_facility in ["jgi_mg", "jgi_mt", "jgi_mg_lr"]:
+                    if (
+                        pd.isnull(row["depth"])
+                        or row["depth"] == ""
+                        or row["depth"] == "nan"
+                    ):
+                        df.at[index, "depth"] = 0
+
                 # Case - different delimiters used
                 row["depth"] = str(row["depth"]).replace("-", " - ")
 
