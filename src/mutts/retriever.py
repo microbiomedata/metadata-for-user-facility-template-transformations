@@ -16,6 +16,7 @@ class MetadataRetriever:
     USER_FACILITY_DICT: Dict[str, str] = {
         "emsl": "emsl_data",
         "jgi_mg": "jgi_mg_data",
+        "jgi_mg_lr": "jgi_mg_lr_data",
         "jgi_mt": "jgi_mt_data",
     }
 
@@ -83,7 +84,12 @@ class MetadataRetriever:
 
         # Find non-user-facility keys (ie, plant_associated, water, etc)
         all_keys_data = response["metadata_submission"]["sampleData"]
-        user_facility_keys = ["emsl_data", "jgi_mg_data", "jgi_mt_data"]
+        user_facility_keys = [
+            "emsl_data",
+            "jgi_mg_data",
+            "jgi_mg_lr_data",
+            "jgi_mt_data",
+        ]
         sample_data_keys = [
             key for key in all_keys_data if key not in user_facility_keys
         ]
