@@ -122,6 +122,13 @@ class MetadataRetriever:
             if not df.empty and not all_sample_data_df.empty:
                 df = pd.merge(df, all_sample_data_df, on="samp_name", how="outer")
 
+        # Auto-fill depth with 0 for JGI facilities if no value is provided
+        if self.user_facility in ["jgi_mg", "jgi_mt", "jgi_mg_lr"]:
+            if "depth" not in df.columns:
+                df["depth"] = 0
+            else:
+                df["depth"] = df["depth"].fillna(0)
+
         for index, row in df.iterrows():
 
             if "lat_lon" in df.columns:
@@ -137,15 +144,6 @@ class MetadataRetriever:
                     df.at[index, "longitude"] = values[1]
 
             if "depth" in df.columns:
-
-                # Auto-fill depth with 0 for JGI facilities if no value is provided
-                if self.user_facility in ["jgi_mg", "jgi_mt", "jgi_mg_lr"]:
-                    if (
-                        pd.isnull(row["depth"])
-                        or row["depth"] == ""
-                        or row["depth"] == "nan"
-                    ):
-                        df.at[index, "depth"] = 0
 
                 # Case - different delimiters used
                 row["depth"] = str(row["depth"]).replace("-", " - ")
