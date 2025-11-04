@@ -66,7 +66,7 @@ def cli(
 
     spreadsheet_creator = SpreadsheetCreator(user_facility, json_mapper, metadata_df)
     user_facility_spreadsheet = spreadsheet_creator.create_spreadsheet(header)
-    user_facility_spreadsheet.to_excel(output, index=False)
+    user_facility_spreadsheet.to_excel(output, index=False, sheet_name='DATA SHEET')
 
 
 if __name__ == "__main__":
