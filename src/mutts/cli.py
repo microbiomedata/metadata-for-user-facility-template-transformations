@@ -2,11 +2,42 @@ import json
 import os
 
 import click
+import pandas as pd
 from dotenv import load_dotenv, dotenv_values
+from openpyxl.styles import Alignment
 from typing import Dict, List, Union
 
 from mutts.retriever import MetadataRetriever
 from mutts.spreadsheet import SpreadsheetCreator
+
+
+def format_worksheet(worksheet):
+    """
+    Apply formatting to a worksheet for better readability.
+
+    :param worksheet: The openpyxl worksheet to format.
+    """
+    # Enable text wrapping and adjust column widths
+    for column in worksheet.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+
+        for cell in column:
+            # Enable text wrapping for all cells
+            cell.alignment = Alignment(wrap_text=True, vertical='top')
+
+            # Calculate max length for column width
+            try:
+                if cell.value:
+                    cell_length = len(str(cell.value))
+                    if cell_length > max_length:
+                        max_length = cell_length
+            except:
+                pass
+
+        # Set column width with reasonable limits (min 10, max 50)
+        adjusted_width = min(max(max_length + 2, 10), 50)
+        worksheet.column_dimensions[column_letter].width = adjusted_width
 
 
 @click.command()
@@ -66,7 +97,33 @@ def cli(
 
     spreadsheet_creator = SpreadsheetCreator(user_facility, json_mapper, metadata_df)
     user_facility_spreadsheet = spreadsheet_creator.create_spreadsheet(header)
-    user_facility_spreadsheet.to_excel(output, index=False, sheet_name='DATA SHEET')
+
+    # Write the main data sheet and copy static sheets from template
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        # Write the generated data to 'DATA SHEET'
+        user_facility_spreadsheet.to_excel(writer, index=False, sheet_name='DATA SHEET')
+
+        # Path to static JGI v15 Excel template
+        static_excel_path = os.path.join(
+            os.path.dirname(__file__), '..', '..',
+            'input-files', 'static-excel-tabs', 'JGI.Metagenome.NA.v15.xlsx'
+        )
+
+        # Copy INSTRUCTIONS and PLATE LOCATIONS sheets from JGI v15 template
+        # static file if it exists
+        if os.path.exists(static_excel_path):
+            static_excel = pd.ExcelFile(static_excel_path)
+            if 'INSTRUCTIONS' in static_excel.sheet_names:
+                instructions_df = pd.read_excel(static_excel, 'INSTRUCTIONS')
+                instructions_df.to_excel(writer, index=False, sheet_name='INSTRUCTIONS')
+            if 'PLATE LOCATIONS' in static_excel.sheet_names:
+                plate_locations_df = pd.read_excel(static_excel, 'PLATE LOCATIONS')
+                plate_locations_df.to_excel(writer, index=False, sheet_name='PLATE LOCATIONS')
+
+        # Apply formatting to all sheets
+        for sheet_name in writer.book.sheetnames:
+            worksheet = writer.book[sheet_name]
+            format_worksheet(worksheet)
 
 
 if __name__ == "__main__":
