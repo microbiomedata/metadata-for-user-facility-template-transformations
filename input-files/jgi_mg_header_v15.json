@@ -20,7 +20,8 @@
         "sub_port_mapping": "samp_name"
     },
     "Biological replicate/sample group Name* (required for RNA expression and Stable Isotope Probing (SIP) source samples)": {
-        "1": "Samples that are biological replicates should have the same group name.  If your project does not contain biological replicates, give each sample its own group name."
+        "1": "Samples that are biological replicates should have the same group name.  If your project does not contain biological replicates, give each sample its own group name.",
+        "sub_port_mapping": "replicate_group"
     },
     "Isotope Label* (required for Stable Isotope Probing (SIP source samples))": {
         "1": "Choose from the following: C13, N15, O18, Unlabeled ",
