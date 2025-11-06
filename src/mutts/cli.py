@@ -103,22 +103,27 @@ def cli(
         # Write the generated data to 'DATA SHEET'
         user_facility_spreadsheet.to_excel(writer, index=False, sheet_name='DATA SHEET')
 
-        # Path to static JGI v15 Excel template
-        static_excel_path = os.path.join(
-            os.path.dirname(__file__), '..', '..',
-            'input-files', 'static-excel-tabs', 'JGI.Metagenome.NA.v15.xlsx'
-        )
+        # Check if mapper is one of the v15 JGI templates
+        mapper_basename = os.path.basename(mapper)
+        jgi_v15_mappers = ['jgi_mg_header_v15.json', 'jgi_mt_header_v15.json']
 
-        # Copy INSTRUCTIONS and PLATE LOCATIONS sheets from JGI v15 template
-        # static file if it exists
-        if os.path.exists(static_excel_path):
-            static_excel = pd.ExcelFile(static_excel_path)
-            if 'INSTRUCTIONS' in static_excel.sheet_names:
-                instructions_df = pd.read_excel(static_excel, 'INSTRUCTIONS')
-                instructions_df.to_excel(writer, index=False, sheet_name='INSTRUCTIONS')
-            if 'PLATE LOCATIONS' in static_excel.sheet_names:
-                plate_locations_df = pd.read_excel(static_excel, 'PLATE LOCATIONS')
-                plate_locations_df.to_excel(writer, index=False, sheet_name='PLATE LOCATIONS')
+        if mapper_basename in jgi_v15_mappers:
+            # Path to static JGI v15 Excel template
+            static_excel_path = os.path.join(
+                os.path.dirname(__file__), '..', '..',
+                'input-files', 'static-excel-tabs', 'JGI.Metagenome.NA.v15.xlsx'
+            )
+
+            # Copy INSTRUCTIONS and PLATE LOCATIONS sheets from JGI v15 template
+            # static file if it exists
+            if os.path.exists(static_excel_path):
+                static_excel = pd.ExcelFile(static_excel_path)
+                if 'INSTRUCTIONS' in static_excel.sheet_names:
+                    instructions_df = pd.read_excel(static_excel, 'INSTRUCTIONS')
+                    instructions_df.to_excel(writer, index=False, sheet_name='INSTRUCTIONS')
+                if 'PLATE LOCATIONS' in static_excel.sheet_names:
+                    plate_locations_df = pd.read_excel(static_excel, 'PLATE LOCATIONS')
+                    plate_locations_df.to_excel(writer, index=False, sheet_name='PLATE LOCATIONS')
 
         # Apply formatting to all sheets
         for sheet_name in writer.book.sheetnames:
