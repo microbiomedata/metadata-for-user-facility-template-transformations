@@ -7,6 +7,9 @@ class SpreadsheetCreator:
     Creates a spreadsheet based on a JSON mapper and metadata DataFrame.
     """
 
+    # List of JGI-specific user facilities
+    JGI_FACILITIES = ['jgi_mg', 'jgi_mt', 'jgi_mg_lr']
+
     def __init__(
         self,
         user_facility: str,
@@ -16,6 +19,7 @@ class SpreadsheetCreator:
         """
         Initialize the SpreadsheetCreator.
 
+        :param user_facility: The user facility identifier.
         :param json_mapper: The JSON mapper specifying column mappings.
         :param metadata_df: The metadata DataFrame to create the spreadsheet from.
         """
@@ -66,10 +70,20 @@ class SpreadsheetCreator:
                 "sub_port_mapping" in v
                 and v["sub_port_mapping"] in self.metadata_df.columns.to_list()
             ):
+                # Get the column data
+                column_data = self.metadata_df[v["sub_port_mapping"]]
+
+                # For JGI facilities, remove "_data" suffix from `sample_isolated_from` values
+                if (
+                    self.user_facility in self.JGI_FACILITIES
+                    and v["sub_port_mapping"] == "sample_isolated_from"
+                ):
+                    column_data = column_data.str.replace("_data", "", regex=False)
+
                 if "header" in v:
-                    rows_df[v["header"]] = self.metadata_df[v["sub_port_mapping"]]
+                    rows_df[v["header"]] = column_data
                 else:
-                    rows_df[k] = self.metadata_df[v["sub_port_mapping"]]
+                    rows_df[k] = column_data
 
         return rows_df
 
