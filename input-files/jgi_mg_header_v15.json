@@ -146,5 +146,21 @@
         "1": "Country or ocean where the sample was collected.",
         "2": "USA",
         "sub_port_mapping": "country_name"
+    },
+    "Sample Contact Name*": {
+        "1": "Prefilled",
+        "2": "John Jones"
+    },
+    "Seq Project PI Name (No edit)": {
+        "1": "Prefilled",
+        "2": "Jane Johnson"
+    },
+    "Tissue Contact Name": {
+        "1": "Prefilled",
+        "2": "Jordan James"
+    },
+    "Proposal ID (No edit)": {
+        "1": "Prefilled",
+        "2": "504000"
     }
 }
