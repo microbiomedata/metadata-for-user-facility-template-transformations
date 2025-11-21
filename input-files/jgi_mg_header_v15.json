@@ -61,7 +61,7 @@
         "2": "plate",
         "sub_port_mapping": "cont_type"
     },
-    "Plate location (well #)* required if samples provided in a plate": {
+    "Plate location (well #)* required if samples provided in a plate.": {
         "1": "Corner wells must be blank. For partial plates, fill by columns. Leave blank if the sample will be shipped in a tube.",
         "2": "B2",
         "sub_port_mapping": "cont_well"
