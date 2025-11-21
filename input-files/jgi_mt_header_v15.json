@@ -1,26 +1,32 @@
 {
-    "Seq Project ID (No edit)":  {
+    "Seq Project ID (No edit)": {
         "1": "Prefilled",
+        "2": "1191234",
         "sub_port_mapping": "jgi_seq_project"
     },
-    "Seq Project Name (No edit)":  {
+    "Seq Project Name (No edit)": {
         "1": "Prefilled",
+        "2": "JGI Pond metatranscriptome",
         "sub_port_mapping": "jgi_seq_project_name"
     },
     "Sample ID (No edit)": {
         "1": "Prefilled",
+        "2": "187654",
         "sub_port_mapping": "jgi_samp_id"
     },
     "Source Sample GUID": {
         "1": "List the sample's Globally Unique Identifier, if available. More details are available on the \"instructions\" tab.",
+        "2": "igsn:IEBWE008U",
         "sub_port_mapping": "source_mat_id"
     },
     "Sample Name*": {
         "1": "Give the sample a name that is meaningful to you. Sample names must be unique across all JGI projects and contain ASCII characters only.",
+        "2": "JGI_pond_041618",
         "sub_port_mapping": "samp_name"
     },
     "Biological replicate/sample group Name* (required for RNA expression and Stable Isotope Probing (SIP) source samples)": {
         "1": "Samples that are biological replicates should have the same group name.  If your project does not contain biological replicates, give each sample its own group name.",
+        "2": "West",
         "sub_port_mapping": "replicate_group"
     },
     "Isotope Label* (required for Stable Isotope Probing (SIP source samples))": {
@@ -29,10 +35,12 @@
     },
     "Concentration* (ng/ul)": {
         "1": "Must be calculated using a fluorometric method; value >0 and <2000.",
+        "2": "100",
         "sub_port_mapping": "nuc_acid_concentration"
     },
     "Volume* (ul)": {
         "1": "Value must be >0 and <1000 (values <25 by special permission only).",
+        "2": "25",
         "sub_port_mapping": "jgi_sample_volume"
     },
     "Absorbance 260/280* (required for metagenome improved drafts or any PacBio libraries)": {
@@ -45,65 +53,81 @@
     },
     "Tube or Plate Label*": {
         "1": "Must be unique across all tubes and plates, and <20 characters. All samples in a plate should have the same plate label.",
+        "2": "Pond_MT_041618",
         "sub_port_mapping": "container_name"
     },
     "Sample Container*": {
         "1": "tube or plate (96-well)",
+        "2": "plate",
         "sub_port_mapping": "cont_type"
     },
     "Plate location (well #)* required if samples provided in a plate": {
         "1": "Corner wells must be blank. For partial plates, fill by columns. Leave blank if the sample will be shipped in a tube.",
+        "2": "B2",
         "sub_port_mapping": "cont_well"
     },
     "Sample Format*": {
         "1": "Choose from the following: Pellet, Ethanol, MDA Reaction Buffer, PBS, TE, Water, Low EDTA TE, 10 mM Tris-HCl, Gentegra-DNA, Gentegra-RNA",
+        "2": "Water",
         "sub_port_mapping": "jgi_sample_format"
     },
     "Was Sample DNAse treated?*": {
         "1": "Y/N.  Note DNAse treatment is required for all RNA samples.",
+        "2": "Y",
         "sub_port_mapping": "dnase"
     },
     "Known / Suspected Organisms": {
-        "1": "List any organisms known or suspected to grow in co-culture, as well as estimated % of the organism in that culture."
+        "1": "List any organisms known or suspected to grow in co-culture, as well as estimated % of the organism in that culture.",
+        "2": "expected to contain microbes (59%) fungi (30%), viruses (10%), tadpoles (1%)"
     },
     "Biosafety Material Category*": {
         "1": "Metagenome (Environmental) or Metagenome (Host-associated)",
+        "2": "Metagenome (Environmental)",
         "sub_port_mapping": "biosafety_mat_cat"
     },
     "Sample Isolation Method*": {
         "1": "Describe the method/protocol/kit used to extract DNA/RNA.",
+        "2": "phenol/chloroform extraction",
         "sub_port_mapping": "rna_isolate_meth"
     },
     "Collection Year*": {
-        "1": "Year in which the sample was collected. ",
+        "1": "Year in which the sample was collected.",
+        "2": "2018",
         "sub_port_mapping": "collection_year"
     },
     "Collection Month*": {
         "1": "Month in which the sample was collected. Use the full name of the month.",
+        "2": "April",
         "sub_port_mapping": "collection_month_name"
     },
     "Collection Day*": {
         "1": "Day on which the sample was collected.",
+        "2": "1",
         "sub_port_mapping": "collection_day"
     },
     "Sample Isolated From*": {
         "1": "Describe where the sample originated.",
+        "2": "Freshwater pond",
         "sub_port_mapping": "sample_isolated_from"
     },
     "Collection Site or Growth Conditions* (required for RNA samples)": {
-        "1": "Provide information on the specific tissue type or growth conditions. ",
+        "1": "Provide information on the specific tissue type or growth conditions.",
+        "2": "untreated pond water",
         "sub_port_mapping": "env_medium"
     },
     "Latitude*": {
         "1": "Latitude of sample collection. Value must be numeric only and between -90 and 90.",
+        "2": "37.910076",
         "sub_port_mapping": "latitude"
     },
     "Longitude*": {
         "1": "Longitude of sample collection. Value must be numeric only and between -180 and 180.",
+        "2": "-122.065186",
         "sub_port_mapping": "longitude"
     },
     "Depth* (in meters) or minimum depth if a range": {
         "1": "Depth below the surface. If the sample was collected from a range of depths, indicate the shallowest depth. Value must be numeric and 0 or greater.",
+        "2": "0.5",
         "sub_port_mapping": "minimum_depth"
     },
     "Maximum depth (in meters) if a range": {
@@ -111,7 +135,8 @@
         "sub_port_mapping": "maximum_depth"
     },
     "Elevation* (in meters) or minimum elevation if a range": {
-        "1": "Elevation (from sea level) of sample collection. If the sample was collected from a range of elevations, indicate the elevation nearest to sea level.Value must be numeric and can be either positive or negative. ",
+        "1": "Elevation (from sea level) of sample collection. If the sample was collected from a range of elevations, indicate the elevation nearest to sea level.Value must be numeric and can be either positive or negative.",
+        "2": "39.9",
         "sub_port_mapping": "elev"
     },
     "Maximum elevation (in meters) if a range": {
@@ -119,6 +144,7 @@
     },
     "Country*": {
         "1": "Country or ocean where the sample was collected.",
+        "2": "USA",
         "sub_port_mapping": "country_name"
     }
 }
