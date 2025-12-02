@@ -1,84 +1,179 @@
 # Metadata for User facility Template Transformations (MUTTs)
 
+## Table of Contents
+- [Metadata for User facility Template Transformations (MUTTs)](#metadata-for-user-facility-template-transformations-mutts)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [For Users: Quick Start Guide](#for-users-quick-start-guide)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+    - [Usage](#usage)
+      - [Example: Generate a JGI Metagenome spreadsheet](#example-generate-a-jgi-metagenome-spreadsheet)
+      - [Example: Generate a JGI Metagenome v15 spreadsheet](#example-generate-a-jgi-metagenome-v15-spreadsheet)
+      - [Example: Generate an EMSL spreadsheet](#example-generate-an-emsl-spreadsheet)
+      - [Command Options](#command-options)
+  - [For Developers: Development Setup](#for-developers-development-setup)
+    - [Understanding the Components](#understanding-the-components)
+    - [Software Requirements](#software-requirements)
+    - [Development Installation](#development-installation)
+    - [Creating Custom Mapper Files](#creating-custom-mapper-files)
+
 ## Introduction
 
-The programs bundled in this repository intend to solve the problem of automatically retrieving Biosample metadata records for a given study submitted to NMDC through the [NMDC Submission Portal](https://data.microbiomedata.org/submission/home), and converting the metadata into Excel spreadsheets that are accepted by [DOE user facilities](https://www.energy.gov/science/office-science-user-facilities).
+The programs bundled in this repository automatically retrieve Biosample metadata records for studies submitted to NMDC through the [NMDC Submission Portal](https://data.microbiomedata.org/submission/home), and convert the metadata into Excel spreadsheets that are accepted by [DOE user facilities](https://www.energy.gov/science/office-science-user-facilities).
 
-There are two components (of MUTTs) to keep in mind when trying to use this application -
+---
 
-1. JSON header (sometimes also called *mapper*) configuration file
-  * The headers that go into the user facility spreadsheet outputs is controlled by JSON files
-  * The keys at the top level are used to indicate the main headers in the output. These values have mappings in the mapping configuration files described in the next point
-  * You can use numbered keys to add more header information to clarify what a particular column contains
-  * The *header* keyword is reserved in case you want to use some other column names as the main header
-  * The *sub_port_mapping* keyword can be used to specify mappings between columns in the Submission Portal template and columns in the user facility spreadsheet outputs
-  * Follow the examples that have already been specified in [input-files](input-files/). There are two user facility header customizations that have already been created as examples for the NMDC. They are:
-    * EMSL header configuration: [emsl_header.json](input-files/emsl_header.json)
-    * JGI MG and MT header configuration
-      * [jgi_mg_header.json](input-files/jgi_mg_header.json)
-      * [jgi_mt_header.json](input-files/jgi_mt_header.json)
+## For Users: Quick Start Guide
 
-2. `mutts` CLI
-   The command line application that can facilitate the conversion of metadata from the Submission Portal into user facility formats by consuming the above two files as inputs.
+### Prerequisites
+- [Python](https://www.python.org/downloads/) 3.12 or higher
+- An NMDC account with API access token
 
-## Software Requirements
-1. [poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
-2. [Python](https://www.python.org/downloads/release/python-390/) > 3.9
+### Installation
 
-## Setup
+1. **Create a virtual environment** (recommended)
+   ```bash
+   python -m venv mutts-env
+   source mutts-env/bin/activate  # On Windows: mutts-env\Scripts\activate
+   ```
 
-1.  Clone this repo
+2. **Install the MUTTs package from PyPI**
+   ```bash
+   pip install mutts
+   ```
 
-```
-git clone https://github.com/microbiomedata/metadata-for-user-facility-template-transformations.git
-```
+3. **Download the mapper configuration files**
 
-2. Install the package with poetry
+   Create a directory for your mapper files and download them from this repository:
+   ```bash
+   mkdir input-files
+   cd input-files
+   ```
 
-```
-poetry install
-```
+   Download the mapper files you need from the [input-files directory](https://github.com/microbiomedata/metadata-for-user-facility-template-transformations/tree/main/input-files):
+   - For EMSL: `emsl_header.json`
+   - For JGI Metagenome: `jgi_mg_header.json` or `jgi_mg_header_v15.json`
+   - For JGI Metatranscriptome: `jgi_mt_header.json` or `jgi_mt_header_v15.json`
 
-This will install the `mutts` package and create a `mutts` command-line tool.
+4. **Set up your API access token**
 
-3. You need to obtain your NMDC Data and Submission Portal API Access Token and copy it over into your `.env` file, and associate it with the `DATA_PORTAL_REFRESH_TOKEN` environment variable. 
-   1. You can retrieve your Access Token by following this link: https://data.microbiomedata.org/user
-   2. Go over to the `.env` file and copy the Refresh Token like `DATA_PORTAL_REFRESH_TOKEN={refresh_token_value}`
+   Create a `.env` file in your working directory:
+   ```bash
+   echo "DATA_PORTAL_REFRESH_TOKEN=your_token_here" > .env
+   ```
 
-4. Run the `mutts` command with options as follows:
+   To get your access token:
+   1. Visit https://data.microbiomedata.org/user
+   2. Copy your Refresh Token
+   3. Replace `your_token_here` in the `.env` file with your token
+
+### Usage
+
+Run the `mutts` command with the required options:
 
 ```bash
 mutts --help
-Usage: mutts [OPTIONS]
-
-  Command-line interface for creating a spreadsheet based on metadata records.
-
-  :param submission: The ID of the metadata submission. 
-  :param user_facility: The user facility to retrieve data from. 
-  :param header: True if the headers should be included, False otherwise. 
-  :param mapper: Path to the JSON mapper specifying column mappings.
-  :param unique_field: Unique field to identify the metadata records. 
-  :param output: Path to the output XLSX file.
-
-Options:
-  -s, --submission TEXT       Metadata submission id.  [required]
-  -u, --user-facility TEXT    User facility to send data to.  [required]
-  -h, --header / --no-header  [default: no-header]
-  -m, --mapper PATH           Path to user facility specific JSON file.
-                              [required]
-  -uf, --unique-field TEXT    Unique field to identify the metadata records.
-                              [required]
-  -o, --output TEXT           Path to result output XLSX file.  [required]
-  --help                      Show this message and exit.
 ```
 
-
-- Example - JGI/JGI_MG
+#### Example: Generate a JGI Metagenome spreadsheet
 ```bash
-$ mutts --submission {UUID of the target submission} --unique-field samp_name --user-facility jgi_mg --mapper input-files/jgi_mg_header.json --output file-name_jgi.xlsx
+mutts --submission <submission-uuid> \
+      --unique-field samp_name \
+      --user-facility jgi_mg \
+      --mapper input-files/jgi_mg_header.json \
+      --output my-samples_jgi.xlsx
 ```
 
-- Example - EMSL
+#### Example: Generate a JGI Metagenome v15 spreadsheet
 ```bash
-$ mutts --submission {UUID of the target submission} --user-facility emsl --mapper input-files/emsl_header.json --header --unique-field samp_name --output file-name_emsl.xlsx
+mutts --submission <submission-uuid> \
+      --unique-field samp_name \
+      --user-facility jgi_mg_v15 \
+      --mapper input-files/jgi_mg_header_v15.json \
+      --output my-samples_jgi_v15.xlsx
 ```
+
+#### Example: Generate an EMSL spreadsheet
+```bash
+mutts --submission <submission-uuid> \
+      --user-facility emsl \
+      --mapper input-files/emsl_header.json \
+      --header \
+      --unique-field samp_name \
+      --output my-samples_emsl.xlsx
+```
+
+#### Command Options
+
+- `-s, --submission`: Your NMDC metadata submission UUID (required)
+- `-u, --user-facility`: Target facility (required): `jgi_mg`, `jgi_mt`, `jgi_mg_v15`, `jgi_mt_v15`, or `emsl`
+- `-m, --mapper`: Path to the JSON mapper file (required)
+- `-uf, --unique-field`: Field to uniquely identify records (required, typically `samp_name`)
+- `-o, --output`: Output Excel file path (required)
+- `-h, --header`: Include headers in output (use for EMSL, omit for JGI)
+
+---
+
+## For Developers: Development Setup
+
+### Understanding the Components
+
+MUTTs consists of two main components:
+
+1. **JSON Mapper Configuration Files**
+   - Control the headers and column mappings in the output spreadsheets
+   - Top-level keys indicate main headers in the output
+   - Numbered keys add clarifying header information
+   - The `header` keyword allows custom column names
+   - The `sub_port_mapping` keyword specifies mappings between Submission Portal columns and user facility columns
+   - Examples available in [input-files/](input-files/)
+
+2. **`mutts` CLI**
+   - Command-line application that performs the metadata conversion
+   - Consumes mapper files and submission data as inputs
+
+### Software Requirements
+- [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
+- [Python](https://www.python.org/downloads/release/python-390/) 3.12 or higher
+
+### Development Installation
+
+1. Clone this repository
+   ```bash
+   git clone https://github.com/microbiomedata/metadata-for-user-facility-template-transformations.git
+   cd metadata-for-user-facility-template-transformations
+   ```
+
+2. Install dependencies with Poetry
+   ```bash
+   poetry install
+   ```
+
+   This installs the `mutts` package in development mode and creates the `mutts` command-line tool.
+
+3. Set up your `.env` file
+   ```bash
+   cp .env.example .env  # if available, or create a new .env file
+   ```
+
+   Add your NMDC API token:
+   ```
+   DATA_PORTAL_REFRESH_TOKEN=your_token_here
+   ```
+
+   Get your token from: https://data.microbiomedata.org/user
+
+4. Run the CLI in development mode
+   ```bash
+   poetry run mutts --help
+   ```
+
+### Creating Custom Mapper Files
+
+To create a custom mapper for a new user facility, refer to the existing examples:
+- [emsl_header.json](input-files/emsl_header.json) - EMSL configuration
+- [jgi_mg_header.json](input-files/jgi_mg_header.json) - JGI Metagenome configuration
+- [jgi_mt_header.json](input-files/jgi_mt_header.json) - JGI Metatranscriptome configuration
+- [jgi_mg_header_v15.json](input-files/jgi_mg_header_v15.json) - JGI Metagenome v15 configuration
+- [jgi_mt_header_v15.json](input-files/jgi_mt_header_v15.json) - JGI Metatranscriptome v15 configuration
