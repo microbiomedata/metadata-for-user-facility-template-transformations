@@ -31,45 +31,47 @@ The documentation and setup instructions in this section are meant for any user 
 - [Python](https://www.python.org/downloads/) 3.12 or higher
 - An [NMDC user account](https://data.microbiomedata.org/) with an API access token
 
+**Setting up your API access token**
+
+This is required for running the examples in the [Usage](#usage) section below (after going through all the [Installation](#installation) steps).
+
+Create a `.env` file in your working directory:
+```bash
+echo "DATA_PORTAL_REFRESH_TOKEN=your_token_here" > .env
+```
+
+To get your access token:
+1. Visit https://data.microbiomedata.org/user
+2. Copy your Refresh Token
+3. Replace `your_token_here` in the `.env` file with your token
+
 ### Installation
 
 1. **Create a virtual environment** (recommended)
-  ```bash
-  python -m venv mutts-env
-  source mutts-env/bin/activate  # On Windows: mutts-env\Scripts\activate
-  ```
+```bash
+python -m venv mutts-env
+source mutts-env/bin/activate  # On Windows: mutts-env\Scripts\activate
+```
 
 2. **Install the MUTTs package from PyPI**
-  ```bash
-  pip install mutts
-  ```
+```bash
+pip install mutts
+```
 
 3. **Download any of the MUTTs JSON mapper configuration files**
 
-  *  Note: It is not mandatory that you need to download/use any of the pre-existing/already defined JSON mapper files that are present in this repository. You can always define your own custom JSON mapper files that follow a format similar to the ones defined in this repo.*
+*Note*: It is not mandatory that you need to download/use any of the pre-existing/already defined JSON mapper files that are present in this repository. You can always define your own custom JSON mapper files that follow a format similar to the ones defined in this repo.
 
-  Create a directory for your mapper files and download them from this repository:
-  ```bash
-  mkdir input-files
-  cd input-files
-  ```
+Create a directory for your mapper files and download them from this repository:
+```bash
+mkdir input-files
+cd input-files
+```
 
-  Download the mapper files you need from the [input-files directory](https://github.com/microbiomedata/metadata-for-user-facility-template-transformations/tree/main/input-files):
-    - For EMSL: `emsl_header.json`
-    - For JGI Metagenome: `jgi_mg_header.json` or `jgi_mg_header_v15.json`
-    - For JGI Metatranscriptome: `jgi_mt_header.json` or `jgi_mt_header_v15.json`
-
-1. **Set up your API access token**
-
-  Create a `.env` file in your working directory:
-  ```bash
-  echo "DATA_PORTAL_REFRESH_TOKEN=your_token_here" > .env
-  ```
-
-  To get your access token:
-  1. Visit https://data.microbiomedata.org/user
-  2. Copy your Refresh Token
-  3. Replace `your_token_here` in the `.env` file with your token
+Download the mapper files you need from the [input-files directory](https://github.com/microbiomedata/metadata-for-user-facility-template-transformations/tree/main/input-files):
+- For EMSL: `emsl_header.json`
+- For JGI Metagenome: `jgi_mg_header.json` or `jgi_mg_header_v15.json`
+- For JGI Metatranscriptome: `jgi_mt_header.json` or `jgi_mt_header_v15.json`
 
 ### Usage
 
@@ -125,16 +127,16 @@ The documentation and setup instructions in this section are largely meant for a
 The software consists of two main components:
 
 1. **JSON Mapper Configuration Files**
-  - Controls/specifies the mapping between columns from the NMDC Submission Portal and column names used in the output spreadsheets
-  - Top-level keys indicate main headers in the output
-  - Numbered keys add clarifying header information
-  - The `header` keyword allows custom column names
-  - The `sub_port_mapping` keyword specifies mappings between Submission Portal columns/slots (as dictated by the [NMDC submission schema](https://microbiomedata.github.io/submission-schema/)) and user facility template columns
-  - Examples available in [input-files/](input-files/)
+- Controls/specifies the mapping between columns from the NMDC Submission Portal and column names used in the output spreadsheets
+- Top-level keys indicate main headers in the output
+- Numbered keys add clarifying header information
+- The `header` keyword allows custom column names
+- The `sub_port_mapping` keyword specifies mappings between Submission Portal columns/slots (as dictated by the [NMDC submission schema](https://microbiomedata.github.io/submission-schema/)) and user facility template columns
+- Examples available in [input-files/](input-files/)
 
-2. **`mutts` CLI**
-  - Command-line application that performs the metadata conversion
-  - Consumes mapper files and submission data as inputs
+1. **`mutts` CLI**
+- Command-line application that performs the metadata conversion
+- Consumes mapper files and submission data as inputs
 
 ### Software Requirements
 - [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
@@ -143,34 +145,34 @@ The software consists of two main components:
 ### Development Installation
 
 1. Clone this repository
-  ```bash
-  git clone https://github.com/microbiomedata/metadata-for-user-facility-template-transformations.git
-  cd metadata-for-user-facility-template-transformations
-  ```
+```bash
+git clone https://github.com/microbiomedata/metadata-for-user-facility-template-transformations.git
+cd metadata-for-user-facility-template-transformations
+```
 
 2. Install dependencies with Poetry
-  ```bash
-  poetry install
-  ```
+```bash
+poetry install
+```
 
-  This installs the `mutts` package in development mode and creates the `mutts` command-line tool.
+This installs the `mutts` package in development mode and creates the `mutts` command-line tool.
 
 3. Set up your `.env` file
-  ```bash
-  cp .env.example .env  # if available, or create a new .env file
-  ```
+```bash
+cp .env.example .env  # if available, or create a new .env file
+```
 
-  Add your NMDC API token:
-  ```
-  DATA_PORTAL_REFRESH_TOKEN=your_token_here
-  ```
+Add your NMDC API token:
+```
+DATA_PORTAL_REFRESH_TOKEN=your_token_here
+```
 
-  Get your token from: https://data.microbiomedata.org/user
+Get your token from: https://data.microbiomedata.org/user
 
 4. Run the CLI in development mode
-  ```bash
-  poetry run mutts --help
-  ```
+```bash
+poetry run mutts --help
+```
 
 ### Creating Custom Mapper Files
 
