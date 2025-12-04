@@ -81,6 +81,14 @@ Run the `mutts` command with the required options:
 mutts --help
 ```
 
+Note: In the below examples there is a `--submission` optional argument that requires you to pass it an NMDC Submission UUID as value, and the way you would get that is from the URL of the Submission page when you open it up from the Submission Portal.
+
+An example would look like below:
+
+```
+https://data.microbiomedata.org/submission/<submission-uuid>/samples
+```
+
 #### Example 1: Generate a JGI Metagenome spreadsheet
 ```bash
 mutts --submission <submission-uuid> \
