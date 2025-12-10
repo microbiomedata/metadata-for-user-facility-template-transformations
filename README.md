@@ -31,6 +31,8 @@ The documentation and setup instructions in this section are meant for any user 
 - [Python](https://www.python.org/downloads/) 3.12 or higher
 - An [NMDC user account](https://data.microbiomedata.org/) with an API access token
 
+> To create an NMDC user account you will need to sign up at the above link by clicking on the 'ORCID LOGIN' button/link at the top right corner of the NMDC site, and signing in appropriately with your ORCID credentials
+
 **Setting up your API access token**
 
 This is required for running the examples in the [Usage](#usage) section below (after going through all the [Installation](#installation) steps).
