@@ -43,7 +43,11 @@ def format_worksheet(worksheet):
 @click.command()
 @click.option("--submission", "-s", required=True, help="Metadata submission id.")
 @click.option(
-    "--user-facility", "-u", required=True, help="User facility to send data to."
+    "--user-facility",
+    "-u",
+    required=True,
+    type=click.Choice(list(MetadataRetriever.USER_FACILITY_DICT.keys()), case_sensitive=False),
+    help="User facility to send data to."
 )
 @click.option("--header/--no-header", "-h", default=False, show_default=True)
 @click.option(
