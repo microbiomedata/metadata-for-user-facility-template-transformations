@@ -104,7 +104,7 @@ mutts --submission <submission-uuid> \
 ```bash
 mutts --submission <submission-uuid> \
       --unique-field samp_name \
-      --user-facility jgi_mg_v15 \
+      --user-facility jgi_mg \
       --mapper input-files/jgi_mg_header_v15.json \
       --output my-samples_jgi_v15.xlsx
 ```
