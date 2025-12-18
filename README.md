@@ -122,7 +122,7 @@ mutts --submission <submission-uuid> \
 #### Command Options
 
 - `-s, --submission`: Your NMDC metadata submission UUID (required)
-- `-u, --user-facility`: Target facility (required): `jgi_mg`, `jgi_mt`, `jgi_mg_v15`, `jgi_mt_v15`, or `emsl`
+- `-u, --user-facility`: Target facility (required): `emsl`, `jgi_mg`, `jgi_mg_lr`, or `jgi_mt`
 - `-m, --mapper`: Path to the JSON mapper file (required)
 - `-uf, --unique-field`: Field to uniquely identify records (required, typically `samp_name`)
 - `-o, --output`: Output Excel file path (required)
