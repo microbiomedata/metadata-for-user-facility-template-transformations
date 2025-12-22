@@ -114,8 +114,7 @@ def cli(
         if mapper_basename in jgi_v15_mappers:
             # Path to static JGI v15 Excel template
             static_excel_path = os.path.join(
-                os.path.dirname(__file__), '..', '..',
-                'input-files', 'static-excel-tabs', 'JGI.Metagenome.NA.v15.xlsx'
+                os.path.dirname(__file__), 'static-excel-tabs', 'JGI.Metagenome.NA.v15.xlsx'
             )
 
             # Copy INSTRUCTIONS and PLATE LOCATIONS sheets from JGI v15 template
