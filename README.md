@@ -7,6 +7,7 @@
   - [MUTTs User Documentation](#mutts-user-documentation)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
+    - [Updating to the Latest Version](#updating-to-the-latest-version)
     - [Usage](#usage)
       - [Example 1: Generate a JGI Metagenome spreadsheet](#example-1-generate-a-jgi-metagenome-spreadsheet)
       - [Example 2: Generate a JGI Metagenome v15 spreadsheet](#example-2-generate-a-jgi-metagenome-v15-spreadsheet)
@@ -74,6 +75,24 @@ Download the mapper files you need from the [input-files directory](https://gith
 - For EMSL: `emsl_header.json`
 - For JGI Metagenome: `jgi_mg_header.json` or `jgi_mg_header_v15.json`
 - For JGI Metatranscriptome: `jgi_mt_header.json` or `jgi_mt_header_v15.json`
+
+### Updating to the Latest Version
+
+To ensure you have the latest features and bug fixes, you can upgrade the MUTTs package from PyPI:
+
+```bash
+pip install --upgrade mutts
+```
+
+To check your currently installed version:
+```bash
+pip show mutts
+```
+
+You can also install a specific version if needed:
+```bash
+pip install mutts==<version>
+```
 
 ### Usage
 

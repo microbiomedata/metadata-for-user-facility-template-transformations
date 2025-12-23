@@ -120,7 +120,7 @@ class MetadataRetriever:
             all_sample_data_df = pd.concat(sample_data_dfs, ignore_index=True)
             # Merge the combined sample data with df on samp_name
             if not df.empty and not all_sample_data_df.empty:
-                df = pd.merge(df, all_sample_data_df, on="samp_name", how="outer")
+                df = pd.merge(df, all_sample_data_df, on="samp_name", how="left")
 
         # Auto-fill depth with 0 for JGI facilities if no value is provided
         if self.user_facility in ["jgi_mg", "jgi_mt", "jgi_mg_lr"]:
