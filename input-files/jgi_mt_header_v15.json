@@ -31,6 +31,7 @@
     },
     "Isotope Label* (required for Stable Isotope Probing (SIP source samples))": {
         "1": "Choose from the following: C13, N15, O18, Unlabeled ",
+        "2": "",
         "sub_port_mapping": "isotope_exposure"
     },
     "Concentration* (ng/ul)": {
@@ -45,10 +46,12 @@
     },
     "Absorbance 260/280* (required for metagenome improved drafts or any PacBio libraries)": {
         "1": "Recommended value is between 1 and 3.",
+        "2": "",
         "sub_port_mapping": "nuc_acid_absorb1"
     },
     "Absorbance 260/230* (required for metagenome improved drafts or any PacBio libraries)": {
         "1": "Recommended value is between 1 and 3.",
+        "2": "",
         "sub_port_mapping": "nuc_acid_absorb2"
     },
     "Tube or Plate Label*": {
@@ -132,6 +135,7 @@
     },
     "Maximum depth (in meters) if a range": {
         "1": "If the sample was collected from a range of depths, indicate the maximum depth below the surface. Value must be numeric and >0.",
+        "2": "",
         "sub_port_mapping": "maximum_depth"
     },
     "Elevation* (in meters) or minimum elevation if a range": {
@@ -140,7 +144,8 @@
         "sub_port_mapping": "elev"
     },
     "Maximum elevation (in meters) if a range": {
-        "1": "If the sample was collected from a range of elevations, indicate the elevation farthest from sea level. Value must be numeric and can be either positive or negative."
+        "1": "If the sample was collected from a range of elevations, indicate the elevation farthest from sea level. Value must be numeric and can be either positive or negative.",
+        "2": ""
     },
     "Country*": {
         "1": "Country or ocean where the sample was collected.",
