@@ -38,9 +38,10 @@ The documentation and setup instructions in this section are meant for any user 
 
 This is required for running the examples in the [Usage](#usage) section below (after going through all the [Installation](#installation) steps).
 
-Create a `.env` file in your working directory:
+Create a `.env` file in your working directory with the following environment variables:
 ```bash
 echo "DATA_PORTAL_REFRESH_TOKEN=your_token_here" > .env
+echo "SUBMISSION_PORTAL_BASE_URL=https://data.microbiomedata.org" >> .env
 ```
 
 To get your access token:
@@ -163,7 +164,7 @@ The software consists of two main components:
 - The `sub_port_mapping` keyword specifies mappings between Submission Portal columns/slots (as dictated by the [NMDC submission schema](https://microbiomedata.github.io/submission-schema/)) and user facility template columns
 - Examples available in [input-files/](input-files/)
 
-1. **`mutts` CLI**
+2. **`mutts` CLI**
 - Command-line application that performs the metadata conversion
 - Consumes mapper files and submission data as inputs
 
@@ -191,9 +192,10 @@ This installs the `mutts` package in development mode and creates the `mutts` co
 cp .env.example .env  # if available, or create a new .env file
 ```
 
-Add your NMDC API token:
+Add your NMDC API token and submission portal base URL:
 ```
 DATA_PORTAL_REFRESH_TOKEN=your_token_here
+SUBMISSION_PORTAL_BASE_URL=https://data.microbiomedata.org
 ```
 
 Get your token from: https://data.microbiomedata.org/user
