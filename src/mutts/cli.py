@@ -107,11 +107,13 @@ def cli(
         # Write the generated data to 'DATA SHEET'
         user_facility_spreadsheet.to_excel(writer, index=False, sheet_name='DATA SHEET')
 
-        # Check if mapper is one of the v15 JGI templates
+        # Check if mapper is one of the v15 or v16 JGI templates
         mapper_basename = os.path.basename(mapper)
         jgi_v15_mappers = ['jgi_mg_header_v15.json', 'jgi_mt_header_v15.json']
+        jgi_v16_mappers = ['jgi_mg_header_v16.json', 'jgi_mt_header_v16.json']
+        jgi_mappers = jgi_v15_mappers + jgi_v16_mappers
 
-        if mapper_basename in jgi_v15_mappers:
+        if mapper_basename in jgi_mappers:
             # Path to static JGI v15 Excel template
             static_excel_path = os.path.join(
                 os.path.dirname(__file__), 'static-excel-tabs', 'JGI.Metagenome.NA.v15.xlsx'
