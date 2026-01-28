@@ -15,7 +15,7 @@
         "1": "List the sample's Globally Unique Identifier, if available. More details are available on the \"instructions\" tab.",
         "sub_port_mapping": "source_mat_id"
     },
-    "Sample Name": {
+    "Sample Name*": {
         "1": "Give the sample a name that is meaningful to you. Sample names must be unique across all JGI projects and contain ASCII characters only.",
         "sub_port_mapping": "jgi_sample_name"
     },
