@@ -189,7 +189,7 @@ class MetadataRetriever:
 
         # Address 'Was sample DNAse treated?' col
         # Change from 'yes/no' to 'Y/N'
-        if self.user_facility in ["jgi_mg", "jgi_mt"] and "dnase" in df.columns:
+        if self.user_facility in ["jgi_mg", "jgi_mt", "jgi_mg_lr"] and "dnase" in df.columns:
             df.loc[df["dnase"] == "yes", "dnase"] = "Y"
             df.loc[df["dnase"] == "no", "dnase"] = "N"
 
