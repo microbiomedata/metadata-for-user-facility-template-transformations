@@ -156,7 +156,7 @@
         "2": "USA",
         "sub_port_mapping": "country_name"
     },
-    "Sample Contact Name*": {
+    "Sample Contact Name": {
         "1": "Prefilled",
         "2": "John Jones",
         "sub_port_mapping": "jgi_sample_contact"
