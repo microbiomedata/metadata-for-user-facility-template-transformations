@@ -29,7 +29,7 @@
         "2": "West",
         "sub_port_mapping": "replicate_group"
     },
-    "Isotope Label* (required for Stable Isotope Probing (SIP source samples))": {
+    "Isotope Label* (required for Stable Isotope Probing (SIP source samples)": {
         "1": "Choose from the following: C13, N15, O18, Unlabeled",
         "2": "",
         "sub_port_mapping": "isotope_exposure"
