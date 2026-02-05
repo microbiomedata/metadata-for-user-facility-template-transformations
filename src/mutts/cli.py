@@ -5,6 +5,15 @@ import click
 import pandas as pd
 from dotenv import load_dotenv, dotenv_values
 from openpyxl.styles import Alignment
+import warnings
+
+# Silence the specific OpenPyXL extension warning
+warnings.filterwarnings(
+    "ignore",
+    message=".*extension is not supported and will be removed",
+    category=UserWarning,
+    module="openpyxl"
+)
 from typing import Dict, List, Union
 
 from mutts.retriever import MetadataRetriever
