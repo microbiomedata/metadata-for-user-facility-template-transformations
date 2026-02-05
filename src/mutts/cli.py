@@ -144,6 +144,10 @@ def cli(
             worksheet = writer.book[sheet_name]
             format_worksheet(worksheet)
 
+    # Display success message with output file path
+    output_path = os.path.abspath(output)
+    click.echo(click.style("✓ Success! ", fg="green", bold=True) + f"Output Excel file generated at:\n  {output_path}")
+
 
 if __name__ == "__main__":
     cli()
