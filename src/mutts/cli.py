@@ -5,6 +5,15 @@ import click
 import pandas as pd
 from dotenv import load_dotenv, dotenv_values
 from openpyxl.styles import Alignment
+import warnings
+
+# Silence the specific OpenPyXL extension warning
+warnings.filterwarnings(
+    "ignore",
+    message=".*extension is not supported and will be removed",
+    category=UserWarning,
+    module="openpyxl"
+)
 from typing import Dict, List, Union
 
 from mutts.retriever import MetadataRetriever
@@ -134,6 +143,10 @@ def cli(
         for sheet_name in writer.book.sheetnames:
             worksheet = writer.book[sheet_name]
             format_worksheet(worksheet)
+
+    # Display success message with output file path
+    output_path = os.path.abspath(output)
+    click.echo(click.style("✓ Success! ", fg="green", bold=True) + f"Output Excel file generated at:\n  {output_path}")
 
 
 if __name__ == "__main__":
