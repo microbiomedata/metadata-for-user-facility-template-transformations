@@ -168,9 +168,9 @@ class MetadataRetriever:
             df["country_name"] = df["geo_loc_name"].str.split(":").str[0]
 
         if "collection_date" in df.columns:
-            df["collection_year"] = df["collection_date"].str.split("-").str[0]
+            df["collection_year"] = df["collection_date"].str.split("-").str[0].astype(int)
             df["collection_month"] = df["collection_date"].str.split("-").str[1]
-            df["collection_day"] = df["collection_date"].str.split("-").str[2]
+            df["collection_day"] = df["collection_date"].str.split("-").str[2].astype(int)
 
             # Safely map collection_month to month_name (account for NaN values)
             def get_month_name(month):
