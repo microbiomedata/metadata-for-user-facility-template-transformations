@@ -69,8 +69,8 @@ class MetadataRetriever:
         # Get user-facility key data
         common_df: pd.DataFrame = pd.DataFrame()
         if self.user_facility in self.USER_FACILITY_DICT:
-            user_facility_data: Dict[str, Any] = response["metadata_submission"][
-                "sampleData"
+            user_facility_data: Dict[str, Any] = response["metadata_submission"]["sampleData"][
+                "data"
             ].get(self.USER_FACILITY_DICT[self.user_facility], {})
             common_df = pd.DataFrame(user_facility_data)
 
@@ -83,7 +83,7 @@ class MetadataRetriever:
             df = common_df
 
         # Find non-user-facility keys (ie, plant_associated, water, etc)
-        all_keys_data = response["metadata_submission"]["sampleData"]
+        all_keys_data = response["metadata_submission"]["sampleData"]["data"]
         user_facility_keys = [
             "emsl_data",
             "jgi_mg_data",
@@ -100,9 +100,7 @@ class MetadataRetriever:
         # Loop through resulting keys and combine with common_df by samp_name
         for key in sample_data_keys:
 
-            sample_data: Dict[str, Any] = response["metadata_submission"][
-                "sampleData"
-            ].get(key, {})
+            sample_data: Dict[str, Any] = response["metadata_submission"]["sampleData"]["data"].get(key, {})
 
             # Begin collecting detailed sample data
 
