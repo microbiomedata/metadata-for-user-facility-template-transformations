@@ -31,8 +31,7 @@
     },
     "Isotope Label* (required for Stable Isotope Probing (SIP source samples)": {
         "1": "Choose from the following: C13, N15, O18, Unlabeled",
-        "2": "",
-        "sub_port_mapping": "isotope_exposure"
+        "2": ""
     },
     "Isotopolog / PubChem CID* (required for Stable Isotope Probing (SIP source samples)": {
         "1": "Value must be an integer >=0.",
