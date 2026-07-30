@@ -141,7 +141,7 @@ def create_metadata_dataframe(
         "us",
         "america",
     ]
-    if user_facility in jgi_facilities:
+    if user_facility in jgi_facilities and "country_name" in dataframe.columns:
         dataframe["country_name"] = dataframe["country_name"].replace(
             usa_names,
             "USA",
