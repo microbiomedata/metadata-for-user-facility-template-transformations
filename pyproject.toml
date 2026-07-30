@@ -42,3 +42,9 @@ build-backend = "poetry_dynamic_versioning.backend"
 enable = true
 vcs = "git"
 style = "pep440"
+
+[tool.pytest]
+addopts = ["-m", "not integration"]
+markers = [
+    "integration: tests that make authenticated requests to an external NMDC service",
+]

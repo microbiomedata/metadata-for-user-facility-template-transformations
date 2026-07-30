@@ -1,0 +1,142 @@
+name: Dev nmdc-server integration tests
+
+on:
+  schedule:
+    - cron: "17 9 * * *" # 09:17 UTC (1:17 AM PST / 2:17 AM PDT)
+  workflow_dispatch:
+
+concurrency:
+  group: dev-nmdc-server-integration-tests
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  repository:
+    name: MUTTs default branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUBMISSION_PORTAL_BASE_URL: ${{ vars.SUBMISSION_PORTAL_BASE_URL }}
+      DATA_PORTAL_REFRESH_TOKEN: ${{ secrets.DATA_PORTAL_REFRESH_TOKEN }}
+      INTEGRATION_TEST_SAMPLE_SET_ID: ${{ vars.INTEGRATION_TEST_SAMPLE_SET_ID }}
+      INTEGRATION_TEST_USER_FACILITY: ${{ vars.INTEGRATION_TEST_USER_FACILITY }}
+      INTEGRATION_TEST_EXPECTED_SAMPLE_NAME: ${{ vars.INTEGRATION_TEST_EXPECTED_SAMPLE_NAME }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Install MUTTs default branch
+        run: python -m pip install . pytest
+
+      - name: Report installed MUTTs version
+        run: python -c 'from importlib.metadata import version; print(version("mutts"))'
+
+      - name: Run dev nmdc-server integration test
+        run: python -m pytest -m integration tests/test_integration.py -v
+
+  published:
+    name: Latest published MUTTs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      version: ${{ steps.package.outputs.version }}
+    env:
+      SUBMISSION_PORTAL_BASE_URL: ${{ vars.SUBMISSION_PORTAL_BASE_URL }}
+      DATA_PORTAL_REFRESH_TOKEN: ${{ secrets.DATA_PORTAL_REFRESH_TOKEN }}
+      INTEGRATION_TEST_SAMPLE_SET_ID: ${{ vars.INTEGRATION_TEST_SAMPLE_SET_ID }}
+      INTEGRATION_TEST_USER_FACILITY: ${{ vars.INTEGRATION_TEST_USER_FACILITY }}
+      INTEGRATION_TEST_EXPECTED_SAMPLE_NAME: ${{ vars.INTEGRATION_TEST_EXPECTED_SAMPLE_NAME }}
+    steps:
+      - name: Check out integration test
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Install latest published MUTTs
+        run: python -m pip install --upgrade mutts pytest
+
+      - name: Capture installed MUTTs version
+        id: package
+        shell: bash
+        run: |
+          version="$(python -c 'from importlib.metadata import version; print(version("mutts"))')"
+          echo "Installed MUTTs $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Run dev nmdc-server integration test
+        run: python -m pytest -m integration tests/test_integration.py -v
+
+  alert:
+    name: Update integration alert
+    if: ${{ always() }}
+    needs:
+      - repository
+      - published
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPOSITORY_RESULT: ${{ needs.repository.result }}
+      PUBLISHED_RESULT: ${{ needs.published.result }}
+      PUBLISHED_VERSION: ${{ needs.published.outputs.version }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Create, update, or close alert issue
+        shell: bash
+        run: |
+          title="[Integration test] dev `nmdc-server` compatibility failure"
+          issue_number="$(
+            gh issue list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --json number,title \
+              --jq ".[] | select(.title == \"$title\") | .number" \
+              --limit 100 |
+            head -n 1
+          )"
+
+          if [[ "$REPOSITORY_RESULT" == "success" && "$PUBLISHED_RESULT" == "success" ]]; then
+            if [[ -n "$issue_number" ]]; then
+              gh issue close "$issue_number" \
+                --repo "$GITHUB_REPOSITORY" \
+                --comment "The dev `nmdc-server` integration test is now passing. Run: $RUN_URL"
+            fi
+            exit 0
+          fi
+
+          body="$(
+            printf '%s\n' \
+              "The MUTTs dev nmdc-server integration test failed." \
+              "" \
+              "- Default-branch MUTTs: \`$REPOSITORY_RESULT\`" \
+              "- Published MUTTs: \`$PUBLISHED_RESULT\`" \
+              "- Published version: \`${PUBLISHED_VERSION:-unavailable}\`" \
+              "- Workflow run: $RUN_URL" \
+              "" \
+              "Inspect the job logs to determine whether authentication, retrieval, transformation, or workflow configuration failed."
+          )"
+
+          if [[ -n "$issue_number" ]]; then
+            gh issue comment "$issue_number" \
+              --repo "$GITHUB_REPOSITORY" \
+              --body "$body"
+          else
+            gh issue create \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$title" \
+              --body "$body"
+          fi

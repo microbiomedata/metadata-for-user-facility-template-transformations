@@ -206,9 +206,11 @@ Get your token from: https://data.microbiomedata.org/user
 poetry run mutts --help
 ```
 
-### Running Unit Tests
+### Running Tests
 
-The unit tests are isolated from NMDC services, so they do not require an API token, a `.env` file, or network access.
+#### Unit Tests
+
+The unit tests are isolated from NMDC services, so they do not require an API token, a `.env` file, or network access. This is also the test suite run for pull requests.
 
 Run the complete unit test suite:
 
@@ -227,6 +229,37 @@ Run a single test function:
 ```bash
 poetry run pytest tests/test_dataframe.py::test_merges_environmental_records_by_sample_name
 ```
+
+#### Integration Test
+
+The integration test makes authenticated, read-only requests to the configured `nmdc-server` instance. It refreshes an access token, reads one stable sample set, and verifies that MUTTs can produce a DataFrame containing an expected sample.
+
+In addition to the URL and token environment variables described above, the integration test requires three additional environment variables. Add these to your `.env` file to run the integration test locally:
+
+```dotenv
+INTEGRATION_TEST_SAMPLE_SET_ID=<test-sample-set-id>
+INTEGRATION_TEST_USER_FACILITY=<test-user-facility>
+INTEGRATION_TEST_EXPECTED_SAMPLE_NAME=<test-sample-name>
+```
+
+Then run the integration test with:
+
+```bash
+poetry run pytest -m integration
+```
+
+Pytest excludes integration tests by default. Selecting the integration marker explicitly overrides that default.
+
+The **Dev nmdc-server integration tests** GitHub Actions workflow runs nightly and can also be started manually. It is configured through repository secrets and variables to talk to the deployed dev `nmdc-server` instance. The workflow tests both the default-branch (`main`) source and the latest published MUTTs package:
+
+| Published MUTTs | Default-branch MUTTs | Meaning                                                                                               |
+|-----------------|----------------------|-------------------------------------------------------------------------------------------------------|
+| Pass            | Pass                 | Dev `nmdc-server` remains compatible with current and future MUTTs.                                   |
+| Fail            | Pass                 | A compatible MUTTs change exists but has not been published.                                          |
+| Fail            | Fail                 | The `nmdc-server` contract, deployment, authentication, fixture, or shared client path may be broken. |
+| Pass            | Fail                 | Published users remain safe; MUTTs development has regressed.                                         |
+
+Failures create or update one GitHub issue. A successful recovery comments on and closes that issue.
 
 ### Creating Custom Mapper Files
 
