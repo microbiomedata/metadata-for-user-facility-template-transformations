@@ -16,6 +16,7 @@ warnings.filterwarnings(
 )
 from typing import Dict, List, Union
 
+from mutts.dataframe import USER_FACILITY_DATA_KEYS
 from mutts.retriever import MetadataRetriever
 from mutts.spreadsheet import SpreadsheetCreator
 
@@ -55,7 +56,7 @@ def format_worksheet(worksheet):
     "--user-facility",
     "-u",
     required=True,
-    type=click.Choice(list(MetadataRetriever.USER_FACILITY_DICT.keys()), case_sensitive=False),
+    type=click.Choice(list(USER_FACILITY_DATA_KEYS.keys()), case_sensitive=False),
     help="User facility to send data to."
 )
 @click.option("--header/--no-header", "-h", default=False, show_default=True)
