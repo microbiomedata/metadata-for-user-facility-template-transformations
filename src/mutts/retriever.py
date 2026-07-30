@@ -10,7 +10,7 @@ from dotenv import dotenv_values
 
 class MetadataRetriever:
     """
-    Retrieves metadata records from a given submission ID and user facility.
+    Retrieves metadata records from a given sample set ID and user facility.
     """
 
     USER_FACILITY_DICT: Dict[str, str] = {
@@ -20,14 +20,14 @@ class MetadataRetriever:
         "jgi_mt": "jgi_mt_data",
     }
 
-    def __init__(self, metadata_submission_id: str, user_facility: str) -> None:
+    def __init__(self, sample_set_id: str, user_facility: str) -> None:
         """
         Initialize the MetadataRetriever.
 
-        :param metadata_submission_id: The ID of the metadata submission.
+        :param sample_set_id: The ID of the sample set.
         :param user_facility: The user facility to retrieve data from.
         """
-        self.metadata_submission_id = metadata_submission_id
+        self.sample_set_id = sample_set_id
         self.user_facility = user_facility
         self.load_and_set_env_vars()
         self.base_url = self.env.get("SUBMISSION_PORTAL_BASE_URL")
@@ -43,7 +43,7 @@ class MetadataRetriever:
 
     def retrieve_metadata_records(self, unique_field: str) -> pd.DataFrame:
         """
-        Retrieves the metadata records for the given submission ID and user facility.
+        Retrieves the metadata records for the given sample set ID and user facility.
 
         :return: The retrieved metadata records as a Pandas DataFrame.
         """
@@ -62,28 +62,26 @@ class MetadataRetriever:
             "Authorization": f"Bearer {access_token}",
         }
         response: Dict[str, Any] = requests.get(
-            f"{self.base_url}/api/metadata_submission/{self.metadata_submission_id}",
+            f"{self.base_url}/api/metadata_submission/sample_set/{self.sample_set_id}",
             headers=headers,
         ).json()
+        sample_metadata: Dict[str, Any] = response["sample_data"]["data"]
 
         # Get user-facility key data
         common_df: pd.DataFrame = pd.DataFrame()
         if self.user_facility in self.USER_FACILITY_DICT:
-            user_facility_data: Dict[str, Any] = response["metadata_submission"]["sampleData"][
-                "data"
-            ].get(self.USER_FACILITY_DICT[self.user_facility], {})
+            user_facility_data: Dict[str, Any] = sample_metadata.get(self.USER_FACILITY_DICT[self.user_facility], {})
             common_df = pd.DataFrame(user_facility_data)
 
         # Check if common_df is empty
         if common_df.empty:
             raise ValueError(
-                f"No key {self.user_facility} exists in submission metadata record {self.metadata_submission_id}"
+                f"No key {self.user_facility} exists in sample set record {self.sample_set_id}"
             )
         else:
             df = common_df
 
         # Find non-user-facility keys (ie, plant_associated, water, etc)
-        all_keys_data = response["metadata_submission"]["sampleData"]["data"]
         user_facility_keys = [
             "emsl_data",
             "jgi_mg_data",
@@ -91,7 +89,7 @@ class MetadataRetriever:
             "jgi_mt_data",
         ]
         sample_data_keys = [
-            key for key in all_keys_data if key not in user_facility_keys
+            key for key in sample_metadata if key not in user_facility_keys
         ]
 
         # Create an empty list to store dataframes for each key
@@ -100,7 +98,7 @@ class MetadataRetriever:
         # Loop through resulting keys and combine with common_df by samp_name
         for key in sample_data_keys:
 
-            sample_data: Dict[str, Any] = response["metadata_submission"]["sampleData"]["data"].get(key, {})
+            sample_data: Dict[str, Any] = sample_metadata.get(key, {})
 
             # Begin collecting detailed sample data
 

@@ -50,7 +50,7 @@ def format_worksheet(worksheet):
 
 
 @click.command()
-@click.option("--submission", "-s", required=True, help="Metadata submission id.")
+@click.option("--sample-set", "-s", required=True, help="Sample set id.")
 @click.option(
     "--user-facility",
     "-u",
@@ -79,7 +79,7 @@ def format_worksheet(worksheet):
     help="Path to result output XLSX file.",
 )
 def cli(
-    submission: str,
+    sample_set: str,
     user_facility: str,
     header: bool,
     mapper: str,
@@ -89,7 +89,7 @@ def cli(
     """
     Command-line interface for creating a spreadsheet based on metadata records.
 
-    :param submission: The ID of the metadata submission.
+    :param sample_set: The ID of the sample set.
     :param user_facility: The user facility to retrieve data from.
     :param header: True if the headers should be included, False otherwise.
     :param mapper: Path to the JSON mapper specifying column mappings.
@@ -102,7 +102,7 @@ def cli(
     for key, value in env_vars.items():
         os.environ[key] = value
 
-    metadata_retriever = MetadataRetriever(submission, user_facility)
+    metadata_retriever = MetadataRetriever(sample_set, user_facility)
     metadata_df = metadata_retriever.retrieve_metadata_records(unique_field)
 
     with open(mapper, "r") as f:

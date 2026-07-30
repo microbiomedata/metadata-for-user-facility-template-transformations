@@ -103,17 +103,17 @@ Run the `mutts` command with the required options:
 mutts --help
 ```
 
-Note: In the below examples there is a `--submission` optional argument that requires you to pass it an NMDC Submission UUID as value, and the way you would get that is from the URL of the Submission page when you open it up from the Submission Portal.
+Note: In the below examples there is a `--sample-set` argument that requires you to pass it an NMDC Sample Set UUID as value. Each NMDC Submission has one or more Sample Sets associated with it. You can find the Sample Set UUIDs for your Submission by visiting the NMDC Submission Portal and navigating to the Sample Metadata page for a Sample Set within a Submission. The URL will contain the Sample Set UUID.
 
 An example would look like below:
 
 ```
-https://data.microbiomedata.org/submission/<submission-uuid>/samples
+https://data.microbiomedata.org/submission/<submission-uuid>/sample_set/<sample-set-uuid>/samples
 ```
 
 #### Example 1: Generate a JGI Metagenome spreadsheet
 ```bash
-mutts --submission <submission-uuid> \
+mutts --sample-set <sample-set-uuid> \
       --unique-field samp_name \
       --user-facility jgi_mg \
       --mapper input-files/jgi_mg_header.json \
@@ -122,7 +122,7 @@ mutts --submission <submission-uuid> \
 
 #### Example 2: Generate a JGI Metagenome v15 spreadsheet
 ```bash
-mutts --submission <submission-uuid> \
+mutts --sample-set <sample-set-uuid> \
       --unique-field samp_name \
       --user-facility jgi_mg \
       --mapper input-files/jgi_mg_header_v15.json \
@@ -131,7 +131,7 @@ mutts --submission <submission-uuid> \
 
 #### Example 3: Generate an EMSL spreadsheet
 ```bash
-mutts --submission <submission-uuid> \
+mutts --sample-set <sample-set-uuid> \
       --user-facility emsl \
       --mapper input-files/emsl_header.json \
       --header \
@@ -141,7 +141,7 @@ mutts --submission <submission-uuid> \
 
 #### Command Options
 
-- `-s, --submission`: Your NMDC metadata submission UUID (required)
+- `-s, --sample-set`: Your NMDC sample set UUID (required)
 - `-u, --user-facility`: Target facility (required): `emsl`, `jgi_mg`, `jgi_mg_lr`, or `jgi_mt`
 - `-m, --mapper`: Path to the JSON mapper file (required)
 - `-uf, --unique-field`: Field to uniquely identify records (required, typically `samp_name`)
@@ -166,7 +166,7 @@ The software consists of two main components:
 
 2. **`mutts` CLI**
 - Command-line application that performs the metadata conversion
-- Consumes mapper files and submission data as inputs
+- Consumes mapper files and submission sample set data as inputs
 
 ### Software Requirements
 - [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
