@@ -16,7 +16,7 @@
   - [MUTTs Developer Documentation](#mutts-developer-documentation)
     - [Software Requirements](#software-requirements)
     - [Development Installation](#development-installation)
-    - [Running Unit Tests](#running-tests)
+    - [Running Tests](#running-tests)
     - [Creating Custom Mapper Files](#creating-custom-mapper-files)
 
 ## Introduction
