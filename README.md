@@ -16,6 +16,7 @@
   - [MUTTs Developer Documentation](#mutts-developer-documentation)
     - [Software Requirements](#software-requirements)
     - [Development Installation](#development-installation)
+    - [Running Unit Tests](#running-unit-tests)
     - [Creating Custom Mapper Files](#creating-custom-mapper-files)
 
 ## Introduction
@@ -203,6 +204,28 @@ Get your token from: https://data.microbiomedata.org/user
 4. Run the CLI in development mode
 ```bash
 poetry run mutts --help
+```
+
+### Running Unit Tests
+
+The unit tests are isolated from NMDC services, so they do not require an API token, a `.env` file, or network access.
+
+Run the complete unit test suite:
+
+```bash
+poetry run pytest
+```
+
+Run a single test file:
+
+```bash
+poetry run pytest tests/test_dataframe.py
+```
+
+Run a single test function:
+
+```bash
+poetry run pytest tests/test_dataframe.py::test_merges_environmental_records_by_sample_name
 ```
 
 ### Creating Custom Mapper Files
