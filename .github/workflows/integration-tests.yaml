@@ -98,7 +98,7 @@ jobs:
       - name: Create, update, or close alert issue
         shell: bash
         run: |
-          title="[Integration test] dev `nmdc-server` compatibility failure"
+          title="[Integration test] dev \`nmdc-server\` compatibility failure"
           issue_number="$(
             gh issue list \
               --repo "$GITHUB_REPOSITORY" \
@@ -113,7 +113,7 @@ jobs:
             if [[ -n "$issue_number" ]]; then
               gh issue close "$issue_number" \
                 --repo "$GITHUB_REPOSITORY" \
-                --comment "The dev `nmdc-server` integration test is now passing. Run: $RUN_URL"
+                --comment "The dev \`nmdc-server\` integration test is now passing. Run: $RUN_URL"
             fi
             exit 0
           fi
