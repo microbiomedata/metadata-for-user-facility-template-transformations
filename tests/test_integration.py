@@ -37,7 +37,7 @@ def test_retrieves_and_transforms_sample_set(
     dataframe = MetadataRetriever(
         sample_set_id,
         user_facility,
-    ).retrieve_metadata_records("samp_name")
+    ).retrieve_metadata_records()
 
     assert not dataframe.empty
     assert "samp_name" in dataframe.columns

@@ -160,7 +160,7 @@ def test_public_method_orchestrates_retrieval_and_transformation(
         transform,
     )
 
-    result = retriever.retrieve_metadata_records("samp_name")
+    result = retriever.retrieve_metadata_records()
 
     assert result is expected
     retrieve.assert_called_once_with()
