@@ -115,7 +115,6 @@ https://data.microbiomedata.org/submission/<submission-uuid>/sample_set/<sample-
 #### Example 1: Generate a JGI Metagenome spreadsheet
 ```bash
 mutts --sample-set <sample-set-uuid> \
-      --unique-field samp_name \
       --user-facility jgi_mg \
       --mapper input-files/jgi_mg_header.json \
       --output my-samples_jgi.xlsx
@@ -124,7 +123,6 @@ mutts --sample-set <sample-set-uuid> \
 #### Example 2: Generate a JGI Metagenome v15 spreadsheet
 ```bash
 mutts --sample-set <sample-set-uuid> \
-      --unique-field samp_name \
       --user-facility jgi_mg \
       --mapper input-files/jgi_mg_header_v15.json \
       --output my-samples_jgi_v15.xlsx
@@ -136,7 +134,6 @@ mutts --sample-set <sample-set-uuid> \
       --user-facility emsl \
       --mapper input-files/emsl_header.json \
       --header \
-      --unique-field samp_name \
       --output my-samples_emsl.xlsx
 ```
 
@@ -145,7 +142,6 @@ mutts --sample-set <sample-set-uuid> \
 - `-s, --sample-set`: Your NMDC sample set UUID (required)
 - `-u, --user-facility`: Target facility (required): `emsl`, `jgi_mg`, `jgi_mg_lr`, or `jgi_mt`
 - `-m, --mapper`: Path to the JSON mapper file (required)
-- `-uf, --unique-field`: Field to uniquely identify records (required, typically `samp_name`)
 - `-o, --output`: Output Excel file path (required)
 - `-h, --header`: Include headers in output (use for EMSL, omit for JGI)
 

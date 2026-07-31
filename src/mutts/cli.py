@@ -68,12 +68,6 @@ def format_worksheet(worksheet):
     help="Path to user facility specific JSON file.",
 )
 @click.option(
-    "--unique-field",
-    "-uf",
-    required=True,
-    help="Unique field to identify the metadata records.",
-)
-@click.option(
     "--output",
     "-o",
     required=True,
@@ -84,7 +78,6 @@ def cli(
     user_facility: str,
     header: bool,
     mapper: str,
-    unique_field: str,
     output: str,
 ) -> None:
     """
@@ -94,7 +87,6 @@ def cli(
     :param user_facility: The user facility to retrieve data from.
     :param header: True if the headers should be included, False otherwise.
     :param mapper: Path to the JSON mapper specifying column mappings.
-    :param unique_field: Unique field to identify the metadata records.
     :param output: Path to the output XLSX file.
     """
     load_dotenv()
@@ -104,7 +96,7 @@ def cli(
         os.environ[key] = value
 
     metadata_retriever = MetadataRetriever(sample_set, user_facility)
-    metadata_df = metadata_retriever.retrieve_metadata_records(unique_field)
+    metadata_df = metadata_retriever.retrieve_metadata_records()
 
     with open(mapper, "r") as f:
         json_mapper: Dict[str, Dict[str, Union[str, List[str]]]] = json.load(f)

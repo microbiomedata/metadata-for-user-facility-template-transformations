@@ -56,11 +56,10 @@ class MetadataRetriever:
         response.raise_for_status()
         return response.json()["sample_data"]["data"]
 
-    def retrieve_metadata_records(self, unique_field: str) -> pd.DataFrame:
+    def retrieve_metadata_records(self) -> pd.DataFrame:
         """
         Retrieves the metadata records for the given sample set ID and user facility.
 
-        :param unique_field: Retained for compatibility with the existing API.
         :return: The retrieved metadata records as a Pandas DataFrame.
         """
         sample_metadata = self.retrieve_sample_metadata()
