@@ -166,8 +166,8 @@ The software consists of two main components:
 - Consumes mapper files and submission sample set data as inputs
 
 ### Software Requirements
-- [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
-- [Python](https://www.python.org/downloads/release/python-390/) 3.12 or higher
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- [Python](https://www.python.org/downloads/) 3.12 or higher (can be installed via [uv](https://docs.astral.sh/uv/concepts/python-versions/#installing-a-python-version))
 
 ### Development Installation
 
@@ -177,12 +177,12 @@ git clone https://github.com/microbiomedata/metadata-for-user-facility-template-
 cd metadata-for-user-facility-template-transformations
 ```
 
-2. Install dependencies with Poetry
+2. Install dependencies
 ```bash
-poetry install
+uv sync
 ```
 
-This installs the `mutts` package in development mode and creates the `mutts` command-line tool.
+This creates or synchronizes the project's virtual environment, installs `mutts` in development mode, includes the development dependencies, and creates the `mutts` command-line tool.
 
 3. Set up your `.env` file
 ```bash
@@ -199,7 +199,7 @@ Get your token from: https://data.microbiomedata.org/user
 
 4. Run the CLI in development mode
 ```bash
-poetry run mutts --help
+uv run mutts --help
 ```
 
 ### Running Tests
@@ -211,19 +211,19 @@ The unit tests are isolated from NMDC services, so they do not require an API to
 Run the complete unit test suite:
 
 ```bash
-poetry run pytest
+uv run pytest
 ```
 
 Run a single test file:
 
 ```bash
-poetry run pytest tests/test_dataframe.py
+uv run pytest tests/test_dataframe.py
 ```
 
 Run a single test function:
 
 ```bash
-poetry run pytest tests/test_dataframe.py::test_merges_environmental_records_by_sample_name
+uv run pytest tests/test_dataframe.py::test_merges_environmental_records_by_sample_name
 ```
 
 #### Integration Test
@@ -241,7 +241,7 @@ INTEGRATION_TEST_EXPECTED_SAMPLE_NAME=<test-sample-name>
 Then run the integration test with:
 
 ```bash
-poetry run pytest -m integration
+uv run pytest -m integration
 ```
 
 Pytest excludes integration tests by default. Selecting the integration marker explicitly overrides that default.
