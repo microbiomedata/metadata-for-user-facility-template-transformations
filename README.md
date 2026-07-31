@@ -16,6 +16,7 @@
   - [MUTTs Developer Documentation](#mutts-developer-documentation)
     - [Software Requirements](#software-requirements)
     - [Development Installation](#development-installation)
+    - [Running Tests](#running-tests)
     - [Creating Custom Mapper Files](#creating-custom-mapper-files)
 
 ## Introduction
@@ -103,18 +104,17 @@ Run the `mutts` command with the required options:
 mutts --help
 ```
 
-Note: In the below examples there is a `--submission` optional argument that requires you to pass it an NMDC Submission UUID as value, and the way you would get that is from the URL of the Submission page when you open it up from the Submission Portal.
+Note: In the below examples there is a `--sample-set` argument that requires you to pass it an NMDC Sample Set UUID as value. Each NMDC Submission has one or more Sample Sets associated with it. You can find the Sample Set UUIDs for your Submission by visiting the NMDC Submission Portal and navigating to the Sample Metadata page for a Sample Set within a Submission. The URL will contain the Sample Set UUID.
 
 An example would look like below:
 
 ```
-https://data.microbiomedata.org/submission/<submission-uuid>/samples
+https://data.microbiomedata.org/submission/<submission-uuid>/sample_set/<sample-set-uuid>/samples
 ```
 
 #### Example 1: Generate a JGI Metagenome spreadsheet
 ```bash
-mutts --submission <submission-uuid> \
-      --unique-field samp_name \
+mutts --sample-set <sample-set-uuid> \
       --user-facility jgi_mg \
       --mapper input-files/jgi_mg_header.json \
       --output my-samples_jgi.xlsx
@@ -122,8 +122,7 @@ mutts --submission <submission-uuid> \
 
 #### Example 2: Generate a JGI Metagenome v15 spreadsheet
 ```bash
-mutts --submission <submission-uuid> \
-      --unique-field samp_name \
+mutts --sample-set <sample-set-uuid> \
       --user-facility jgi_mg \
       --mapper input-files/jgi_mg_header_v15.json \
       --output my-samples_jgi_v15.xlsx
@@ -131,20 +130,18 @@ mutts --submission <submission-uuid> \
 
 #### Example 3: Generate an EMSL spreadsheet
 ```bash
-mutts --submission <submission-uuid> \
+mutts --sample-set <sample-set-uuid> \
       --user-facility emsl \
       --mapper input-files/emsl_header.json \
       --header \
-      --unique-field samp_name \
       --output my-samples_emsl.xlsx
 ```
 
 #### Command Options
 
-- `-s, --submission`: Your NMDC metadata submission UUID (required)
+- `-s, --sample-set`: Your NMDC sample set UUID (required)
 - `-u, --user-facility`: Target facility (required): `emsl`, `jgi_mg`, `jgi_mg_lr`, or `jgi_mt`
 - `-m, --mapper`: Path to the JSON mapper file (required)
-- `-uf, --unique-field`: Field to uniquely identify records (required, typically `samp_name`)
 - `-o, --output`: Output Excel file path (required)
 - `-h, --header`: Include headers in output (use for EMSL, omit for JGI)
 
@@ -166,7 +163,7 @@ The software consists of two main components:
 
 2. **`mutts` CLI**
 - Command-line application that performs the metadata conversion
-- Consumes mapper files and submission data as inputs
+- Consumes mapper files and submission sample set data as inputs
 
 ### Software Requirements
 - [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
@@ -204,6 +201,61 @@ Get your token from: https://data.microbiomedata.org/user
 ```bash
 poetry run mutts --help
 ```
+
+### Running Tests
+
+#### Unit Tests
+
+The unit tests are isolated from NMDC services, so they do not require an API token, a `.env` file, or network access. This is also the test suite run for pull requests.
+
+Run the complete unit test suite:
+
+```bash
+poetry run pytest
+```
+
+Run a single test file:
+
+```bash
+poetry run pytest tests/test_dataframe.py
+```
+
+Run a single test function:
+
+```bash
+poetry run pytest tests/test_dataframe.py::test_merges_environmental_records_by_sample_name
+```
+
+#### Integration Test
+
+The integration test makes authenticated, read-only requests to the configured `nmdc-server` instance. It refreshes an access token, reads one stable sample set, and verifies that MUTTs can produce a DataFrame containing an expected sample.
+
+In addition to the URL and token environment variables described above, the integration test requires three additional environment variables. Add these to your `.env` file to run the integration test locally:
+
+```dotenv
+INTEGRATION_TEST_SAMPLE_SET_ID=<test-sample-set-id>
+INTEGRATION_TEST_USER_FACILITY=<test-user-facility>
+INTEGRATION_TEST_EXPECTED_SAMPLE_NAME=<test-sample-name>
+```
+
+Then run the integration test with:
+
+```bash
+poetry run pytest -m integration
+```
+
+Pytest excludes integration tests by default. Selecting the integration marker explicitly overrides that default.
+
+The **Dev nmdc-server integration tests** GitHub Actions workflow runs nightly and can also be started manually. It is configured through repository secrets and variables to talk to the deployed dev `nmdc-server` instance. The workflow tests both the default-branch (`main`) source and the latest published MUTTs package:
+
+| Published MUTTs | Default-branch MUTTs | Meaning                                                                                               |
+|-----------------|----------------------|-------------------------------------------------------------------------------------------------------|
+| Pass            | Pass                 | Dev `nmdc-server` remains compatible with current and future MUTTs.                                   |
+| Fail            | Pass                 | A compatible MUTTs change exists but has not been published.                                          |
+| Fail            | Fail                 | The `nmdc-server` contract, deployment, authentication, fixture, or shared client path may be broken. |
+| Pass            | Fail                 | Published users remain safe; MUTTs development has regressed.                                         |
+
+Failures create or update one GitHub issue. A successful recovery comments on and closes that issue.
 
 ### Creating Custom Mapper Files
 

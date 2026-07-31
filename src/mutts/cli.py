@@ -16,6 +16,7 @@ warnings.filterwarnings(
 )
 from typing import Dict, List, Union
 
+from mutts.dataframe import USER_FACILITY_DATA_KEYS
 from mutts.retriever import MetadataRetriever
 from mutts.spreadsheet import SpreadsheetCreator
 
@@ -50,12 +51,12 @@ def format_worksheet(worksheet):
 
 
 @click.command()
-@click.option("--submission", "-s", required=True, help="Metadata submission id.")
+@click.option("--sample-set", "-s", required=True, help="Sample set id.")
 @click.option(
     "--user-facility",
     "-u",
     required=True,
-    type=click.Choice(list(MetadataRetriever.USER_FACILITY_DICT.keys()), case_sensitive=False),
+    type=click.Choice(list(USER_FACILITY_DATA_KEYS.keys()), case_sensitive=False),
     help="User facility to send data to."
 )
 @click.option("--header/--no-header", "-h", default=False, show_default=True)
@@ -67,33 +68,25 @@ def format_worksheet(worksheet):
     help="Path to user facility specific JSON file.",
 )
 @click.option(
-    "--unique-field",
-    "-uf",
-    required=True,
-    help="Unique field to identify the metadata records.",
-)
-@click.option(
     "--output",
     "-o",
     required=True,
     help="Path to result output XLSX file.",
 )
 def cli(
-    submission: str,
+    sample_set: str,
     user_facility: str,
     header: bool,
     mapper: str,
-    unique_field: str,
     output: str,
 ) -> None:
     """
     Command-line interface for creating a spreadsheet based on metadata records.
 
-    :param submission: The ID of the metadata submission.
+    :param sample_set: The ID of the sample set.
     :param user_facility: The user facility to retrieve data from.
     :param header: True if the headers should be included, False otherwise.
     :param mapper: Path to the JSON mapper specifying column mappings.
-    :param unique_field: Unique field to identify the metadata records.
     :param output: Path to the output XLSX file.
     """
     load_dotenv()
@@ -102,8 +95,8 @@ def cli(
     for key, value in env_vars.items():
         os.environ[key] = value
 
-    metadata_retriever = MetadataRetriever(submission, user_facility)
-    metadata_df = metadata_retriever.retrieve_metadata_records(unique_field)
+    metadata_retriever = MetadataRetriever(sample_set, user_facility)
+    metadata_df = metadata_retriever.retrieve_metadata_records()
 
     with open(mapper, "r") as f:
         json_mapper: Dict[str, Dict[str, Union[str, List[str]]]] = json.load(f)
