@@ -12,6 +12,7 @@
       - [Example 1: Generate a JGI Metagenome spreadsheet](#example-1-generate-a-jgi-metagenome-spreadsheet)
       - [Example 2: Generate a JGI Metagenome v15 spreadsheet](#example-2-generate-a-jgi-metagenome-v15-spreadsheet)
       - [Example 3: Generate an EMSL spreadsheet](#example-3-generate-an-emsl-spreadsheet)
+      - [Example 4: Generate a JGI Isolate v19 spreadsheet](#example-4-generate-a-jgi-isolate-v19-spreadsheet)
       - [Command Options](#command-options)
   - [MUTTs Developer Documentation](#mutts-developer-documentation)
     - [Software Requirements](#software-requirements)
@@ -75,8 +76,9 @@ cd input-files
 
 Download the mapper files you need from the [input-files directory](https://github.com/microbiomedata/metadata-for-user-facility-template-transformations/tree/main/input-files):
 - For EMSL: `emsl_header.json`
-- For JGI Metagenome: `jgi_mg_header.json` or `jgi_mg_header_v15.json`
-- For JGI Metatranscriptome: `jgi_mt_header.json` or `jgi_mt_header_v15.json`
+- For JGI Metagenome: `jgi_mg_header.json`, `jgi_mg_header_v15.json` or `jgi_mg_header_v16.json`
+- For JGI Metatranscriptome: `jgi_mt_header.json`, `jgi_mt_header_v15.json` or `jgi_mt_header_v16.json`
+- For JGI Isolate: `jgi_isolate_header_v19.json`
 
 ### Updating to the Latest Version
 
@@ -137,10 +139,28 @@ mutts --sample-set <sample-set-uuid> \
       --output my-samples_emsl.xlsx
 ```
 
+#### Example 4: Generate a JGI Isolate v19 spreadsheet
+```bash
+mutts --sample-set <sample-set-uuid> \
+      --user-facility jgi_isolate \
+      --mapper input-files/jgi_isolate_header_v19.json \
+      --output my-samples_jgi_isolate_v19.xlsx
+```
+
+Unlike the other facilities, `jgi_isolate` draws on three Submission Portal sample data keys, because a JGI isolate submission is split across three DataHarmonizer interfaces:
+
+| Sample data key | Interface | Contributes |
+|---|---|---|
+| `jgi_isolate_genome_data` | `JgiIsolateGenomeInterface` | one row per DNA sample: JGI submission logistics, estimated genome size, ribosomal sequences, fungal screening |
+| `jgi_isolate_transcriptome_data` | `JgiIsolateTranscriptomeInterface` | one row per RNA sample: the same JGI logistics, plus the RNA experiment date |
+| `isolate_data` | `IsolateInterface` | organism biology (genus, species, strain, NCBI tax ID, GC content, ploidy, culture collection) merged onto both by sample name |
+
+Both sequencing interfaces feed the same output sheet, so DNA and RNA samples appear as rows of one workbook. Columns that apply to only one of them (ribosomal sequences, fungal screening) are left blank on the rows they do not apply to.
+
 #### Command Options
 
 - `-s, --sample-set`: Your NMDC sample set UUID (required)
-- `-u, --user-facility`: Target facility (required): `emsl`, `jgi_mg`, `jgi_mg_lr`, or `jgi_mt`
+- `-u, --user-facility`: Target facility (required): `emsl`, `jgi_mg`, `jgi_mg_lr`, `jgi_mt`, or `jgi_isolate`
 - `-m, --mapper`: Path to the JSON mapper file (required)
 - `-o, --output`: Output Excel file path (required)
 - `-h, --header`: Include headers in output (use for EMSL, omit for JGI)
@@ -265,3 +285,8 @@ To create a custom mapper for a new user facility, refer to the existing example
 - [jgi_mt_header.json](input-files/jgi_mt_header.json) - JGI Metatranscriptome configuration
 - [jgi_mg_header_v15.json](input-files/jgi_mg_header_v15.json) - JGI Metagenome v15 configuration
 - [jgi_mt_header_v15.json](input-files/jgi_mt_header_v15.json) - JGI Metatranscriptome v15 configuration
+- [jgi_mg_header_v16.json](input-files/jgi_mg_header_v16.json) - JGI Metagenome v16 configuration
+- [jgi_mt_header_v16.json](input-files/jgi_mt_header_v16.json) - JGI Metatranscriptome v16 configuration
+- [jgi_isolate_header_v19.json](input-files/jgi_isolate_header_v19.json) - JGI Isolate (NA) v19 configuration
+
+A handful of `sub_port_mapping` values do not name a submission schema slot directly, but a column derived in [`src/mutts/dataframe.py`](src/mutts/dataframe.py) — for example `collection_year`, `collection_month_name` and `country_name`. The JGI Isolate mapper adds three more: `ncbi_tax_id` (from `classified_as`, with the `NCBITaxon:` prefix removed), `culture_collection_id` (from `source_mat_id`, rendered as the collection name and ID rather than a CURIE) and `isolate_meth` (from `dna_isolate_meth` or `rna_isolate_meth`, whichever the row has). A mapping that names neither a slot nor a derived column is silently skipped, leaving that column blank.
