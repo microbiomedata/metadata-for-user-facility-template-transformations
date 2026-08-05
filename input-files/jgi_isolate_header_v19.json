@@ -1,0 +1,246 @@
+{
+    "Seq Project ID (No edit)": {
+        "1": "Prefilled",
+        "2": "1191235",
+        "sub_port_mapping": "jgi_seq_project"
+    },
+    "Seq Project Name (No edit)": {
+        "1": "Prefilled",
+        "2": "Escherichia coli 1234",
+        "sub_port_mapping": "jgi_seq_project_name"
+    },
+    "Sample ID (No edit)": {
+        "1": "Prefilled",
+        "2": "187655",
+        "sub_port_mapping": "jgi_samp_id"
+    },
+    "Sample Name*": {
+        "1": "Give the sample a name that is meaningful to you. Sample names must be unique across all JGI projects and contain ASCII characters only.",
+        "2": "E.coli_1234",
+        "sub_port_mapping": "jgi_sample_name"
+    },
+    "Biological replicate/sample group Name* (required for RNA expression and IsoSeq, Methylation)": {
+        "1": "Samples that are biological replicates should have the same group name.  If your project does not contain biological replicates, give each sample its own group name.",
+        "2": "",
+        "sub_port_mapping": "replicate_group"
+    },
+    "Genus*": {
+        "1": "Genus of the organism",
+        "2": "Escherichia",
+        "sub_port_mapping": "organism_genus"
+    },
+    "Species*": {
+        "1": "Species of the organism",
+        "2": "coli",
+        "sub_port_mapping": "organism_species"
+    },
+    "Strain or cultivar*": {
+        "1": "Strain or cultivar of the organism",
+        "2": "1234",
+        "sub_port_mapping": "strain_name"
+    },
+    "Isolate": {
+        "1": "Isolate or mutant name",
+        "2": "",
+        "sub_port_mapping": "isolate_name"
+    },
+    "Culture Collection and ID": {
+        "1": "If applicable, please list the culture collection name and ID here. The data must consist of both letters and numbers. ",
+        "2": "ATCC 5678",
+        "sub_port_mapping": "culture_collection_id"
+    },
+    "NCBI Tax ID* (required for bacteria, archaea, virus)": {
+        "1": "Unique identifier from the NCBI taxonomy database.",
+        "2": "511145",
+        "sub_port_mapping": "ncbi_tax_id"
+    },
+    "Estimated Genome Size* (required for draft genomes, resequencing, and methylation detection projects), in Mb": {
+        "1": "Estimated genome size between 1-100000",
+        "2": "5.1",
+        "sub_port_mapping": "estimated_size"
+    },
+    "GC Content %": {
+        "1": "Estimated GC content, numeric only.",
+        "2": "50.6",
+        "sub_port_mapping": "gc_content"
+    },
+    "Ploidy Comments": {
+        "1": "Genome ploidy.",
+        "2": "",
+        "sub_port_mapping": "ploidy"
+    },
+    "Reference Genome* (required for resequencing, gene expression, IsoSeq, and methylation)": {
+        "1": "Reference to be used for analysis.",
+        "2": "Escherichia coli K-12 MG1655; IMG taxon OID 646311926",
+        "sub_port_mapping": "reference_genome"
+    },
+    "Host Genus* (required for viral minimal drafts)": {
+        "1": "Genus of the viral host.",
+        "2": "",
+        "sub_port_mapping": "host_genus"
+    },
+    "Host Species* (required for viral minimal drafts)": {
+        "1": "Species of the viral host.",
+        "2": "",
+        "sub_port_mapping": "host_species"
+    },
+    "Host Strain* (required for viral minimal drafts)": {
+        "1": "Strain of the viral host.",
+        "2": "",
+        "sub_port_mapping": "host_strain"
+    },
+    "Host NCBI Taxonomy ID* (required for viral minimal drafts)": {
+        "1": "Unique identifier for the viral host, from the NCBI taxonomy database.",
+        "2": "",
+        "sub_port_mapping": "host_taxid"
+    },
+    "Concentration* (ng/ul)": {
+        "1": "Must be calculated using a fluorometric method; value >0 and <2000.",
+        "2": "100",
+        "sub_port_mapping": "nuc_acid_concentration"
+    },
+    "Volume* (ul) ": {
+        "1": "Value must be >0 and <1000 (values <25 by special permission only).",
+        "2": "25",
+        "sub_port_mapping": "jgi_sample_volume"
+    },
+    "Absorbance 260/280* (required for plant/algal drafts, fungal standard/improved drafts, microbial improved draft, methylation or any PacBio libraries)": {
+        "1": "Recommended value is between 1 and 3.",
+        "2": "1.8",
+        "sub_port_mapping": "nuc_acid_absorb1"
+    },
+    "Absorbance 260/230* (required for plant/algal drafts, fungal standard/improved drafts, microbial improved draft, methylation or any PacBio libraries)": {
+        "1": "Recommended value is between 1 and 3.",
+        "2": "2.2",
+        "sub_port_mapping": "nuc_acid_absorb2"
+    },
+    "Tube or Plate Label* ": {
+        "1": "Must be unique across all tubes and plates, and <20 characters.  All samples in a plate should have the same plate label.",
+        "2": "E.coli_1234",
+        "sub_port_mapping": "container_name"
+    },
+    "Sample Container*": {
+        "1": "tube or plate (96-well)",
+        "2": "plate",
+        "sub_port_mapping": "cont_type"
+    },
+    "Plate location (well #)* required if samples provided in a plate": {
+        "1": "Corner wells must be blank. For partial plates, fill by columns. Leave blank if the sample will be shipped in a tube.",
+        "2": "B1",
+        "sub_port_mapping": "cont_well"
+    },
+    "Sample Format*": {
+        "1": "Choose from the following: Pellet, Ethanol, MDA Reaction Buffer, PBS, TE, Water, Low EDTA TE, 10 mM Tris-HCl, Gentegra-DNA, Gentegra-RNA",
+        "2": "TE",
+        "sub_port_mapping": "jgi_sample_format"
+    },
+    "Was Sample DNAse treated?*": {
+        "1": "Y/N.  Note DNAse treatment is required for all RNA samples.",
+        "2": "N",
+        "sub_port_mapping": "dnase"
+    },
+    "For fungal draft samples, was 16S screening performed?* (required for fungal drafts)": {
+        "1": "Y/N.  Note 16S screening is required for all fungal draft samples.",
+        "2": "",
+        "sub_port_mapping": "isolate_fungal_16s_screening"
+    },
+    "For fungal draft samples, does ITS match taxonomy in UNITE?* (required for fungal drafts)": {
+        "1": "Y/N.  Note All fungal draft samples require an ITS match in the UNITE database to verify taxonomy..",
+        "2": "",
+        "sub_port_mapping": "isolate_its_match_unite"
+    },
+    "Is the sample isolated from a single colony or equivalent?*": {
+        "1": "Y/N.  Was the sample isolated from an axenic/strain pure culture?",
+        "2": "Y",
+        "sub_port_mapping": "isolate_single_colony"
+    },
+    "Known / Suspected Organisms": {
+        "1": "List any organisms known or suspected to grow in co-culture or that may be contaminating the culture, as well as an estimate of the % of the organism in that culture.",
+        "2": "",
+        "sub_port_mapping": "isolate_known_contaminants"
+    },
+    "First ribosomal sequence* (required for all microbial and fungal genome projects)": {
+        "1": "At least one ribosomal sequence is required for strain verification and must come from the actual sample to be shipped to JGI.  Please use only A, C, G, T or N, with no header.  Sequence of insufficient quality may delay the completion of the project. 16s sequence is required for all microbial drafts and single cells.  For microbial drafts, sequence MUST be >1300 nt; for single cells the sequence MUST be >220 bp, with <10% Ns. \nITS sequence is required for all samples for fungal drafts for strain verification. ITS sequence must be >450 nt with <2% Ns. ",
+        "2": "AAATTGAAGAGTTTGATCATGGCTCAGATTGAACGCTGGCGGCAGGCCTAACACATGCAAGTCGAACGGT……",
+        "sub_port_mapping": "isolate_ribosomal_seq"
+    },
+    "First ribosomal sequence type* (required for microbial and fungal genome projects)": {
+        "1": "Choose from 16S, ITS, ITS-AGI, 28S, Other",
+        "2": "16S",
+        "sub_port_mapping": "isolate_ribosomal_seq_type"
+    },
+    "First ribosomal sequence comments": {
+        "1": "Required only if \"other\" is selected as type.  ",
+        "2": "",
+        "sub_port_mapping": "isolate_ribosomal_seq_comments"
+    },
+    "Second ribosomal sequence": {
+        "1": "Other types of ribosomal sequence may be provided as a secondary check.  Sequence MUST come from the actual sample to be shipped to JGI.  For 28s, the sequence must be >300 nt with <10% Ns. Please use only A, C, G, T or N, with no header.",
+        "2": "",
+        "sub_port_mapping": "isolate_second_ribosomal_seq"
+    },
+    "Second ribosomal sequence type ": {
+        "1": "Choose from 16S, ITS, ITS-AGI, 28S, Other",
+        "2": "",
+        "sub_port_mapping": "isolate_second_ribosomal_seq_type"
+    },
+    "Second ribosomal sequence comments": {
+        "1": "Required only if \"other\" is selected as type.  ",
+        "2": "",
+        "sub_port_mapping": "isolate_second_ribosomal_seq_comments"
+    },
+    "Biosafety Material Category*": {
+        "1": "Choose from the following values: Alga, Animal, Archaea, Bacteria, Fungi, Plant, Plasmid, Protist, Virus, Synthetic Construct.",
+        "2": "Bacteria",
+        "sub_port_mapping": "biosafety_mat_cat"
+    },
+    "Sample Isolation Method*": {
+        "1": "Describe the method/protocol/kit used to extract DNA/RNA.",
+        "2": "CTAB",
+        "sub_port_mapping": "isolate_meth"
+    },
+    "Collection Year*": {
+        "1": "Year in which the sample was collected. More details on the \"instructions\" tab.",
+        "2": "2016",
+        "sub_port_mapping": "collection_year"
+    },
+    "Collection Month*": {
+        "1": "Month in which the sample was collected. Use the full name of the month. More details on the \"instructions\" tab.",
+        "2": "April",
+        "sub_port_mapping": "collection_month_name"
+    },
+    "Collection Day*": {
+        "1": "Day on which the sample was collected. More details on the \"instructions\" tab.",
+        "2": "1",
+        "sub_port_mapping": "collection_day"
+    },
+    "Sample Isolated From*": {
+        "1": "Describe where the sample originated.",
+        "2": "Isolated from JGI soil sample.",
+        "sub_port_mapping": "sample_isolated_from"
+    },
+    "Collection Site or Growth Conditions* (required for RNA and methylation samples)": {
+        "1": "Provide information on the specific tissue type or growth conditions. ",
+        "2": "",
+        "sub_port_mapping": "collection_site_or_growth_conditions"
+    },
+    "Sample Contact Name": {
+        "1": "Prefilled",
+        "2": "John Jones",
+        "sub_port_mapping": "jgi_sample_contact"
+    },
+    "Seq Project PI Name (No edit)": {
+        "1": "Prefilled",
+        "2": "Jane Johnson",
+        "sub_port_mapping": "jgi_project_pi"
+    },
+    "Tissue Contact Name": {
+        "1": "Prefilled",
+        "2": "Jordan James"
+    },
+    "Proposal ID (No edit)": {
+        "1": "Prefilled",
+        "2": "504000",
+        "sub_port_mapping": "jgi_proposal_id"
+    }
+}
