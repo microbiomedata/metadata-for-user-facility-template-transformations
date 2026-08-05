@@ -1,45 +1,47 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling>=1.27", "uv-dynamic-versioning>=0.9"]
+build-backend = "hatchling.build"
+
+[project]
 name = "mutts"
-version = "0.0.0"  # dynamic versioning from git tags
+dynamic = ["version"]
 description = "Metadata for User facility Template Transformations"
-authors = [
-    "Sujay Patil <spatil@lbl.gov>",
-    "Cristina Stone Pedraza <cristina.stonepedraza@pnnl.gov>",
-    "Montana Smith <montana.smith@pnnl.gov>",
-    ]
-packages = [{include = "mutts", from = "src"}]
-license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/microbiomedata/metadata-for-user-facility-template-transformations"
-repository = "https://github.com/microbiomedata/metadata-for-user-facility-template-transformations"
+requires-python = ">=3.12,<4.0"
+license = "MIT"
+authors = [
+    { name = "Sujay Patil", email = "spatil@lbl.gov" },
+    { name = "Cristina Stone Pedraza", email = "cristina.stonepedraza@pnnl.gov" },
+    { name = "Montana Smith", email = "montana.smith@pnnl.gov" },
+]
 keywords = ["NMDC", "US DOE user facilities", "metadata translation"]
 classifiers = [
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
-    "Development Status :: 4 - Beta",
+]
+dependencies = [
+    "click>=8.1.7,<9.0.0",
+    "openpyxl>=3.1.0,<4.0.0",
+    "pandas>=2.2.0,<3.0.0",
+    "python-dotenv>=1.0.0,<2.0.0",
+    "requests>=2.32.0,<3.0.0",
 ]
 
-[tool.poetry.scripts]
+[project.scripts]
 mutts = "mutts.cli:cli"
 
-[tool.poetry.dependencies]
-python = "^3.12"
-pandas = "^2.2.0"
-openpyxl = "^3.1.0"
-click = "^8.1.7"
-python-dotenv = "^1.0.0"
-requests = "^2.32.0"
+[project.urls]
+Homepage = "https://github.com/microbiomedata/metadata-for-user-facility-template-transformations"
+Repository = "https://github.com/microbiomedata/metadata-for-user-facility-template-transformations"
 
-[tool.poetry.group.dev.dependencies]
-black = "^24.0.0"
-pytest = "^9.1.1"
+[dependency-groups]
+dev = ["pytest>=9.1.1,<10.0.0"]
 
-[build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry_dynamic_versioning.backend"
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
 
-[tool.poetry-dynamic-versioning]
-enable = true
+[tool.uv-dynamic-versioning]
 vcs = "git"
 style = "pep440"
 
