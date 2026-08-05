@@ -1,14 +1,13 @@
 import pandas as pd
 from typing import Dict, List, Union
 
+from mutts.dataframe import JGI_MICROBIOME_TEMPLATES
+
 
 class SpreadsheetCreator:
     """
     Creates a spreadsheet based on a JSON mapper and metadata DataFrame.
     """
-
-    # List of JGI-specific user facilities
-    JGI_FACILITIES = ['jgi_mg', 'jgi_mt', 'jgi_mg_lr']
 
     def __init__(
         self,
@@ -73,9 +72,11 @@ class SpreadsheetCreator:
                 # Get the column data
                 column_data = self.metadata_df[v["sub_port_mapping"]]
 
-                # For JGI facilities, remove "_data" suffix from `sample_isolated_from` values
+                # On microbiome templates `sample_isolated_from` holds the name of an
+                # environmental package key, so drop its "_data" suffix. The isolate
+                # template is excluded: there the slot is free text the user wrote.
                 if (
-                    self.user_facility in self.JGI_FACILITIES
+                    self.user_facility in JGI_MICROBIOME_TEMPLATES
                     and v["sub_port_mapping"] == "sample_isolated_from"
                 ):
                     column_data = column_data.str.replace("_data", "", regex=False)

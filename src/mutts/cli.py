@@ -21,6 +21,20 @@ from mutts.retriever import MetadataRetriever
 from mutts.spreadsheet import SpreadsheetCreator
 
 
+# Mappers whose output should carry the INSTRUCTIONS and PLATE LOCATIONS tabs from
+# a JGI template, keyed by mapper file name -> workbook under static-excel-tabs/.
+# The v15 and v16 metagenome/metatranscriptome mappers share the v15 workbook.
+STATIC_TABS_BY_MAPPER = {
+    "jgi_mg_header_v15.json": "JGI.Metagenome.NA.v15.xlsx",
+    "jgi_mt_header_v15.json": "JGI.Metagenome.NA.v15.xlsx",
+    "jgi_mg_header_v16.json": "JGI.Metagenome.NA.v15.xlsx",
+    "jgi_mt_header_v16.json": "JGI.Metagenome.NA.v15.xlsx",
+    "jgi_isolate_header_v19.json": "JGI.Isolate.NA.v19.xlsx",
+}
+
+STATIC_TAB_NAMES = ("INSTRUCTIONS", "PLATE LOCATIONS")
+
+
 def format_worksheet(worksheet):
     """
     Apply formatting to a worksheet for better readability.
@@ -109,28 +123,22 @@ def cli(
         # Write the generated data to 'DATA SHEET'
         user_facility_spreadsheet.to_excel(writer, index=False, sheet_name='DATA SHEET')
 
-        # Check if mapper is one of the v15 or v16 JGI templates
-        mapper_basename = os.path.basename(mapper)
-        jgi_v15_mappers = ['jgi_mg_header_v15.json', 'jgi_mt_header_v15.json']
-        jgi_v16_mappers = ['jgi_mg_header_v16.json', 'jgi_mt_header_v16.json']
-        jgi_mappers = jgi_v15_mappers + jgi_v16_mappers
+        # Check if the mapper targets a JGI template that ships static tabs
+        static_excel_name = STATIC_TABS_BY_MAPPER.get(os.path.basename(mapper))
 
-        if mapper_basename in jgi_mappers:
-            # Path to static JGI v15 Excel template
+        if static_excel_name is not None:
             static_excel_path = os.path.join(
-                os.path.dirname(__file__), 'static-excel-tabs', 'JGI.Metagenome.NA.v15.xlsx'
+                os.path.dirname(__file__), 'static-excel-tabs', static_excel_name
             )
 
-            # Copy INSTRUCTIONS and PLATE LOCATIONS sheets from JGI v15 template
+            # Copy INSTRUCTIONS and PLATE LOCATIONS sheets from the JGI template
             # static file if it exists
             if os.path.exists(static_excel_path):
                 static_excel = pd.ExcelFile(static_excel_path)
-                if 'INSTRUCTIONS' in static_excel.sheet_names:
-                    instructions_df = pd.read_excel(static_excel, 'INSTRUCTIONS')
-                    instructions_df.to_excel(writer, index=False, sheet_name='INSTRUCTIONS')
-                if 'PLATE LOCATIONS' in static_excel.sheet_names:
-                    plate_locations_df = pd.read_excel(static_excel, 'PLATE LOCATIONS')
-                    plate_locations_df.to_excel(writer, index=False, sheet_name='PLATE LOCATIONS')
+                for tab_name in STATIC_TAB_NAMES:
+                    if tab_name in static_excel.sheet_names:
+                        tab_df = pd.read_excel(static_excel, tab_name)
+                        tab_df.to_excel(writer, index=False, sheet_name=tab_name)
 
         # Apply formatting to all sheets
         for sheet_name in writer.book.sheetnames:
