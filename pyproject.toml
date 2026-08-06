@@ -46,7 +46,8 @@ vcs = "git"
 style = "pep440"
 
 [tool.pytest]
-addopts = ["-m", "not integration"]
+addopts = ["-m", "not integration", "--doctest-modules"]
+testpaths = ["src", "tests"]
 markers = [
     "integration: tests that make authenticated requests to an external NMDC service",
 ]
