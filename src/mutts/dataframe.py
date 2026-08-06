@@ -44,6 +44,16 @@ def _is_blank(value: object) -> bool:
 
     Some slots hold lists (`analysis_type`), for which `pd.isna` returns an array
     rather than a bool, so they are checked for emptiness directly.
+
+    >>> _is_blank(None), _is_blank(float("nan")), _is_blank("")
+    (True, True, True)
+    >>> _is_blank("   "), _is_blank([])
+    (True, True)
+
+    A zero is a value, not a missing one -- depth of 0 means the surface.
+
+    >>> _is_blank(0), _is_blank("soil"), _is_blank(["metagenomics"])
+    (False, False, False)
     """
     if isinstance(value, (list, tuple, set, dict)):
         return not value
@@ -53,12 +63,36 @@ def _is_blank(value: object) -> bool:
 
 
 def _coalesce(primary: pd.Series, fallback: pd.Series) -> pd.Series:
-    """Take values from `primary`, falling back to `fallback` where primary is blank."""
+    """Take values from `primary`, falling back to `fallback` where primary is blank.
+
+    Row by row: keep the primary value if it has one, otherwise reach for the same
+    row of the fallback. Here the first row keeps its own value and the other two,
+    being blank, take the fallback's.
+
+    >>> primary = pd.Series(["CTAB", "", None])
+    >>> fallback = pd.Series(["unused", "TRIzol", "TRIzol"])
+    >>> _coalesce(primary, fallback).tolist()
+    ['CTAB', 'TRIzol', 'TRIzol']
+
+    A blank fallback leaves the row blank rather than filling it in.
+
+    >>> _coalesce(pd.Series(["", "kept"]), pd.Series([None, "unused"])).tolist()
+    [None, 'kept']
+    """
     return primary.where(~primary.map(_is_blank), fallback)
 
 
 def strip_ncbi_taxon_prefix(value: object) -> object:
-    """Reduce an NCBITaxon CURIE to the bare taxon ID JGI templates ask for."""
+    """Reduce an NCBITaxon CURIE to the bare taxon ID JGI templates ask for.
+
+    >>> strip_ncbi_taxon_prefix("NCBITaxon:511145")
+    '511145'
+
+    A bare ID is already what JGI wants, so it passes through.
+
+    >>> strip_ncbi_taxon_prefix("511145")
+    '511145'
+    """
     if isinstance(value, str) and value.startswith("NCBITaxon:"):
         return value.split(":", 1)[1]
     return value
@@ -73,6 +107,13 @@ def format_culture_collection_id(value: object) -> object:
     already names the collection, as DSMZ's does, the prefix is dropped rather than
     repeated. Values without a prefix are already in the form JGI wants and pass
     through untouched.
+
+    >>> format_culture_collection_id("dsmz:DSM-15171")
+    'DSM 15171'
+    >>> format_culture_collection_id("atcc:700808")
+    'ATCC 700808'
+    >>> format_culture_collection_id("CIP 54.8")
+    'CIP 54.8'
     """
     if not isinstance(value, str) or ":" not in value:
         return value
